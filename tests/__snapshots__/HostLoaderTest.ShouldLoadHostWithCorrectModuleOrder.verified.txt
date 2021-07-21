@@ -1,27 +1,23 @@
 ﻿{
   HostInfo: {
-    Version: 1.0.0.0,
     Modules: [
       {
         Id: {
           ModuleType: HostLoaderTest.TestModuleA
         },
         DisplayName: TestA,
-        Version: 1.0.0.0,
         Dependents: [
           {
             Id: {
               ModuleType: HostLoaderTest.TestModuleC
             },
             DisplayName: TestC,
-            Version: 1.0.0.0,
             Dependencies: [
               {
                 Id: {
                   ModuleType: HostLoaderTest.TestModuleB
                 },
                 DisplayName: TestB,
-                Version: 1.0.0.0,
                 Dependencies: [],
                 Dependents: []
               }
@@ -32,7 +28,6 @@
               ModuleType: HostLoaderTest.TestModuleB
             },
             DisplayName: TestB,
-            Version: 1.0.0.0,
             Dependencies: [],
             Dependents: [
               {
@@ -40,7 +35,6 @@
                   ModuleType: HostLoaderTest.TestModuleC
                 },
                 DisplayName: TestC,
-                Version: 1.0.0.0,
                 Dependencies: []
               }
             ]
@@ -52,21 +46,18 @@
           ModuleType: HostLoaderTest.TestModuleB
         },
         DisplayName: TestB,
-        Version: 1.0.0.0,
         Dependencies: [
           {
             Id: {
               ModuleType: HostLoaderTest.TestModuleA
             },
             DisplayName: TestA,
-            Version: 1.0.0.0,
             Dependents: [
               {
                 Id: {
                   ModuleType: HostLoaderTest.TestModuleC
                 },
                 DisplayName: TestC,
-                Version: 1.0.0.0,
                 Dependencies: []
               }
             ]
@@ -78,14 +69,12 @@
               ModuleType: HostLoaderTest.TestModuleC
             },
             DisplayName: TestC,
-            Version: 1.0.0.0,
             Dependencies: [
               {
                 Id: {
                   ModuleType: HostLoaderTest.TestModuleA
                 },
                 DisplayName: TestA,
-                Version: 1.0.0.0,
                 Dependents: []
               }
             ]
@@ -97,21 +86,18 @@
           ModuleType: HostLoaderTest.TestModuleC
         },
         DisplayName: TestC,
-        Version: 1.0.0.0,
         Dependencies: [
           {
             Id: {
               ModuleType: HostLoaderTest.TestModuleA
             },
             DisplayName: TestA,
-            Version: 1.0.0.0,
             Dependents: [
               {
                 Id: {
                   ModuleType: HostLoaderTest.TestModuleB
                 },
                 DisplayName: TestB,
-                Version: 1.0.0.0,
                 Dependencies: [],
                 Dependents: []
               }
@@ -122,14 +108,12 @@
               ModuleType: HostLoaderTest.TestModuleB
             },
             DisplayName: TestB,
-            Version: 1.0.0.0,
             Dependencies: [
               {
                 Id: {
                   ModuleType: HostLoaderTest.TestModuleA
                 },
                 DisplayName: TestA,
-                Version: 1.0.0.0,
                 Dependents: []
               }
             ],
@@ -144,21 +128,18 @@
           ModuleType: HostLoaderTest.TestModuleC
         },
         DisplayName: TestC,
-        Version: 1.0.0.0,
         Dependencies: [
           {
             Id: {
               ModuleType: HostLoaderTest.TestModuleA
             },
             DisplayName: TestA,
-            Version: 1.0.0.0,
             Dependents: [
               {
                 Id: {
                   ModuleType: HostLoaderTest.TestModuleB
                 },
                 DisplayName: TestB,
-                Version: 1.0.0.0,
                 Dependencies: [],
                 Dependents: []
               }
@@ -169,14 +150,12 @@
               ModuleType: HostLoaderTest.TestModuleB
             },
             DisplayName: TestB,
-            Version: 1.0.0.0,
             Dependencies: [
               {
                 Id: {
                   ModuleType: HostLoaderTest.TestModuleA
                 },
                 DisplayName: TestA,
-                Version: 1.0.0.0,
                 Dependents: []
               }
             ],
@@ -189,21 +168,18 @@
           ModuleType: HostLoaderTest.TestModuleB
         },
         DisplayName: TestB,
-        Version: 1.0.0.0,
         Dependencies: [
           {
             Id: {
               ModuleType: HostLoaderTest.TestModuleA
             },
             DisplayName: TestA,
-            Version: 1.0.0.0,
             Dependents: [
               {
                 Id: {
                   ModuleType: HostLoaderTest.TestModuleC
                 },
                 DisplayName: TestC,
-                Version: 1.0.0.0,
                 Dependencies: []
               }
             ]
@@ -215,14 +191,12 @@
               ModuleType: HostLoaderTest.TestModuleC
             },
             DisplayName: TestC,
-            Version: 1.0.0.0,
             Dependencies: [
               {
                 Id: {
                   ModuleType: HostLoaderTest.TestModuleA
                 },
                 DisplayName: TestA,
-                Version: 1.0.0.0,
                 Dependents: []
               }
             ]
@@ -238,21 +212,18 @@
           ModuleType: HostLoaderTest.TestModuleA
         },
         DisplayName: TestA,
-        Version: 1.0.0.0,
         Dependents: [
           {
             Id: {
               ModuleType: HostLoaderTest.TestModuleC
             },
             DisplayName: TestC,
-            Version: 1.0.0.0,
             Dependencies: [
               {
                 Id: {
                   ModuleType: HostLoaderTest.TestModuleB
                 },
                 DisplayName: TestB,
-                Version: 1.0.0.0,
                 Dependencies: [],
                 Dependents: []
               }
@@ -263,7 +234,6 @@
               ModuleType: HostLoaderTest.TestModuleB
             },
             DisplayName: TestB,
-            Version: 1.0.0.0,
             Dependencies: [],
             Dependents: [
               {
@@ -271,7 +241,6 @@
                   ModuleType: HostLoaderTest.TestModuleC
                 },
                 DisplayName: TestC,
-                Version: 1.0.0.0,
                 Dependencies: []
               }
             ]
@@ -286,21 +255,18 @@
           ModuleType: HostLoaderTest.TestModuleB
         },
         DisplayName: TestB,
-        Version: 1.0.0.0,
         Dependencies: [
           {
             Id: {
               ModuleType: HostLoaderTest.TestModuleA
             },
             DisplayName: TestA,
-            Version: 1.0.0.0,
             Dependents: [
               {
                 Id: {
                   ModuleType: HostLoaderTest.TestModuleC
                 },
                 DisplayName: TestC,
-                Version: 1.0.0.0,
                 Dependencies: []
               }
             ]
@@ -312,14 +278,12 @@
               ModuleType: HostLoaderTest.TestModuleC
             },
             DisplayName: TestC,
-            Version: 1.0.0.0,
             Dependencies: [
               {
                 Id: {
                   ModuleType: HostLoaderTest.TestModuleA
                 },
                 DisplayName: TestA,
-                Version: 1.0.0.0,
                 Dependents: []
               }
             ]
@@ -334,21 +298,18 @@
           ModuleType: HostLoaderTest.TestModuleC
         },
         DisplayName: TestC,
-        Version: 1.0.0.0,
         Dependencies: [
           {
             Id: {
               ModuleType: HostLoaderTest.TestModuleA
             },
             DisplayName: TestA,
-            Version: 1.0.0.0,
             Dependents: [
               {
                 Id: {
                   ModuleType: HostLoaderTest.TestModuleB
                 },
                 DisplayName: TestB,
-                Version: 1.0.0.0,
                 Dependencies: [],
                 Dependents: []
               }
@@ -359,14 +320,12 @@
               ModuleType: HostLoaderTest.TestModuleB
             },
             DisplayName: TestB,
-            Version: 1.0.0.0,
             Dependencies: [
               {
                 Id: {
                   ModuleType: HostLoaderTest.TestModuleA
                 },
                 DisplayName: TestA,
-                Version: 1.0.0.0,
                 Dependents: []
               }
             ],

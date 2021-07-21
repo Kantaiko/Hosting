@@ -48,7 +48,7 @@ namespace Kantaiko.Hosting.Tests
             DiffTools.UseOrder(DiffTool.Rider, DiffTool.VisualStudioCode);
 
             await Verifier.Verify(loadedHost)
-                .ModifySerialization(x => x.IgnoreMembers("Assemblies"))
+                .ModifySerialization(x => x.IgnoreMembers("Version", "Assemblies"))
                 .UseDirectory("__snapshots__");
         }
 
