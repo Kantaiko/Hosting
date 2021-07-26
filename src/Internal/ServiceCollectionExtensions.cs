@@ -8,6 +8,8 @@ namespace Kantaiko.Hosting.Internal
     {
         public static void AddManagedHostServices(this IServiceCollection services)
         {
+            services.AddHostedService<KantaikoHostedService>();
+
             services.AddHookHandling();
             services.AddRuntimeServices();
         }

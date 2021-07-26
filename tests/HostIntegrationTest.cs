@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 using Kantaiko.Hosting.Exceptions;
+using Kantaiko.Hosting.Hooks;
 using Kantaiko.Hosting.Host;
 using Kantaiko.Hosting.Internal;
 using Kantaiko.Hosting.Modules;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Xunit;
 
 namespace Kantaiko.Hosting.Tests
@@ -26,14 +25,14 @@ namespace Kantaiko.Hosting.Tests
             Assert.True(app.IsStarted);
             Assert.NotNull(app.Services);
 
-            var hostedService = app.Services!.GetRequiredService<TestState>();
-            Assert.True(hostedService.IsStarted);
+            var testState = app.Services!.GetRequiredService<TestState>();
+            Assert.True(testState.IsStarted);
 
             await app.StopAsync();
 
             Assert.False(app.IsStarted);
             Assert.Null(app.Services);
-            Assert.False(hostedService.IsStarted);
+            Assert.False(testState.IsStarted);
         }
 
         [Fact]
@@ -109,25 +108,35 @@ namespace Kantaiko.Hosting.Tests
             public bool IsStarted { get; set; }
         }
 
-        private class TestHostedService : IHostedService
+        private class TestApplicationStartupHandler : IHookHandler<ApplicationStartupHook>
         {
-            private readonly TestState _testState;
+            private readonly TestState? _testState;
 
-            public TestHostedService(TestState testState)
+            public TestApplicationStartupHandler(IServiceProvider serviceProvider)
             {
-                _testState = testState;
+                _testState = serviceProvider.GetService<TestState>();
             }
 
-            public Task StartAsync(CancellationToken cancellationToken)
+            public void Handle(ApplicationStartupHook payload)
             {
-                _testState.IsStarted = true;
-                return Task.CompletedTask;
+                if (_testState is not null)
+                    _testState.IsStarted = true;
+            }
+        }
+
+        private class TestApplicationShutdownHandler : IHookHandler<ApplicationShutdownHook>
+        {
+            private readonly TestState? _testState;
+
+            public TestApplicationShutdownHandler(IServiceProvider serviceProvider)
+            {
+                _testState = serviceProvider.GetService<TestState>();
             }
 
-            public Task StopAsync(CancellationToken cancellationToken)
+            public void Handle(ApplicationShutdownHook payload)
             {
-                _testState.IsStarted = false;
-                return Task.CompletedTask;
+                if (_testState is not null)
+                    _testState.IsStarted = false;
             }
         }
 
@@ -136,7 +145,6 @@ namespace Kantaiko.Hosting.Tests
             public void ConfigureServices(IServiceCollection services)
             {
                 services.AddSingleton<TestState>();
-                services.AddHostedService<TestHostedService>();
                 services.AddRuntimeServices();
             }
         }
