@@ -1,4 +1,11 @@
 # Change Log\n\nAll notable changes to this project will be documented in this file. See [versionize](https://github.com/saintedlama/versionize) for commit guidelines.\n
+<a name="0.2.0"></a>
+## [0.2.0](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.2.0) (2021-7-28)
+
+### Features
+
+* Add ability to use kantaiko hosting in custom host builder ([2cff3d1](https://www.github.com/Kantaiko/Hosting/commit/2cff3d1c7e1ab2190c895356cd9607a9808bae2d))
+
 <a name="0.1.2"></a>
 ## [0.1.2](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.1.2) (2021-7-28)
 
