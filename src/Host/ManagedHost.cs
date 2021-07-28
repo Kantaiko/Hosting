@@ -232,18 +232,7 @@ namespace Kantaiko.Hosting.Host
         {
             var builder = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(_args);
 
-            var moduleCollection = new ModuleCollection();
-            moduleCollection.AddModuleTypes(constructionContext.ModuleTypes);
-
-            builder.UseServiceProviderFactory(context =>
-            {
-                var hostLoader = new HostLoader(context.Configuration, context.HostingEnvironment);
-                var loadedHost = hostLoader.Load(moduleCollection);
-
-                return new ServiceProviderFactory(loadedHost, _hostModuleHandler);
-            });
-
-            builder.ConfigureServices(services => services.AddManagedHostServices());
+            builder.ConfigureKantaikoHosting(constructionContext, _hostModuleHandler);
 
             return builder.Build();
         }
