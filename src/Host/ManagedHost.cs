@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Kantaiko.Hosting.Exceptions;
 using Kantaiko.Hosting.Hooks;
-using Kantaiko.Hosting.Internal;
 using Kantaiko.Hosting.Runtime;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -78,14 +77,11 @@ namespace Kantaiko.Hosting.Host
 
             // Stop current host
             await _currentHost.StopAsync(cancellationToken);
+            await WaitForShutdownAsync(cancellationToken);
 
             // Dispose it
             _currentHost.Dispose();
             _currentHost = null;
-
-            // Notify shutdown handlers
-            Debug.Assert(_shutdownTaskCompletionSource is not null);
-            _shutdownTaskCompletionSource.SetResult();
 
             _shutdownTaskCompletionSource = null;
             _restartTaskCompletionSource = null;
@@ -165,6 +161,8 @@ namespace Kantaiko.Hosting.Host
             if (!oldHostState.RestartRequested)
             {
                 // Restart was not requested, so host is going to shutdown
+                Debug.Assert(_shutdownTaskCompletionSource is not null);
+                _shutdownTaskCompletionSource.SetResult();
                 return;
             }
 
@@ -206,7 +204,6 @@ namespace Kantaiko.Hosting.Host
                 hostState.RestartFailed = true;
                 hostState.StartupException = exception;
                 hostState.Properties = oldHostState.Properties;
-                hostState.RestartRequested = oldHostState.RestartRequested;
 
                 // Dispatch application restart failed hook
                 var hookDispatcher = _currentHost.Services.GetRequiredService<IHookDispatcher>();

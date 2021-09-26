@@ -28,7 +28,11 @@ namespace Kantaiko.Hosting.Tests
             var testState = app.Services!.GetRequiredService<TestState>();
             Assert.True(testState.IsStarted);
 
+            var waitTask = app.WaitForShutdownAsync();
+
             await app.StopAsync();
+
+            Assert.True(waitTask.IsCompleted);
 
             Assert.False(app.IsStarted);
             Assert.Null(app.Services);
