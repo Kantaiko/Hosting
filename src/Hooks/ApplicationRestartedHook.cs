@@ -1,14 +1,13 @@
 ﻿using Kantaiko.Hosting.Runtime;
 
-namespace Kantaiko.Hosting.Hooks
-{
-    public class ApplicationRestartedHook : IAsyncHook
-    {
-        public ApplicationRestartedHook(IRuntimeHostState hostState)
-        {
-            HostState = hostState;
-        }
+namespace Kantaiko.Hosting.Hooks;
 
-        public IRuntimeHostState HostState { get; }
+public class ApplicationRestartedHook : IAsyncHook
+{
+    public ApplicationRestartedHook(IRuntimeHostState hostState)
+    {
+        HostState = hostState;
     }
+
+    public IRuntimeHostState HostState { get; }
 }

@@ -1,28 +1,25 @@
-using System;
-using System.Collections.Generic;
 using Kantaiko.Hosting.Modules;
 
-namespace Kantaiko.Hosting.Internal
+namespace Kantaiko.Hosting.Internal;
+
+public class ModuleCollection : IModuleCollection
 {
-    public class ModuleCollection : IModuleCollection
+    internal List<Type> ModuleTypes { get; } = new();
+
+    public void Add<T>() where T : class, IModule
     {
-        internal List<Type> ModuleTypes { get; } = new();
+        if (!ModuleTypes.Contains(typeof(T)))
+            ModuleTypes.Add(typeof(T));
+    }
 
-        public void Add<T>() where T : class, IModule
+    public void AddModuleTypes(IReadOnlyList<Type> moduleTypes)
+    {
+        foreach (var type in moduleTypes)
         {
-            if (!ModuleTypes.Contains(typeof(T)))
-                ModuleTypes.Add(typeof(T));
-        }
+            if (ModuleTypes.Contains(type))
+                return;
 
-        public void AddModuleTypes(IReadOnlyList<Type> moduleTypes)
-        {
-            foreach (var type in moduleTypes)
-            {
-                if (ModuleTypes.Contains(type))
-                    return;
-
-                ModuleTypes.Add(type);
-            }
+            ModuleTypes.Add(type);
         }
     }
 }

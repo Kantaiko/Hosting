@@ -1,6 +1,3 @@
-﻿using System;
+﻿namespace Kantaiko.Hosting.Introspection;
 
-namespace Kantaiko.Hosting.Introspection
-{
-    public record ModuleIdentifier(Type ModuleType);
-}
+public record ModuleIdentifier(Type ModuleType);

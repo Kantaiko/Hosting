@@ -1,7 +1,6 @@
-﻿namespace Kantaiko.Hosting.Hooks
+﻿namespace Kantaiko.Hosting.Hooks;
+
+public interface IHook : IAsyncHook
 {
-    public interface IHook : IAsyncHook
-    {
         
-    }
 }

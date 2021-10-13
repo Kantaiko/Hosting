@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Kantaiko.Hosting.Exceptions;
 
-namespace Kantaiko.Hosting.Exceptions
+public abstract class KantaikoHostingException : Exception
 {
-    public abstract class KantaikoHostingException : Exception
-    {
-        public KantaikoHostingException(string message) : base(message) { }
-    }
+    public KantaikoHostingException(string message) : base(message) { }
 }

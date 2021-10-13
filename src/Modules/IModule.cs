@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Kantaiko.Hosting.Modules
+namespace Kantaiko.Hosting.Modules;
+
+public interface IModule
 {
-    public interface IModule
-    {
-        void ConfigureModules(IModuleCollection modules) { }
-        void ConfigureServices(IServiceCollection services) { }
-    }
+    void ConfigureModules(IModuleCollection modules) { }
+    void ConfigureServices(IServiceCollection services) { }
 }

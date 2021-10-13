@@ -1,7 +1,6 @@
-﻿namespace Kantaiko.Hosting.Modules
+﻿namespace Kantaiko.Hosting.Modules;
+
+public interface IModuleInfoConfigurationMiddleware
 {
-    public interface IModuleInfoConfigurationMiddleware
-    {
-        void ConfigureInfo(ModuleInfoOptions options);
-    }
+    void ConfigureInfo(ModuleInfoOptions options);
 }

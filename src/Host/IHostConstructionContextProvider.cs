@@ -1,7 +1,6 @@
-﻿namespace Kantaiko.Hosting.Host
+﻿namespace Kantaiko.Hosting.Host;
+
+public interface IHostConstructionContextProvider
 {
-    public interface IHostConstructionContextProvider
-    {
-        HostConstructionContext GetHostConstructionContext();
-    }
+    HostConstructionContext GetHostConstructionContext();
 }

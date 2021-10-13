@@ -1,10 +1,8 @@
-﻿using System;
-using Microsoft.Collections.Extensions;
+﻿using Microsoft.Collections.Extensions;
 
-namespace Kantaiko.Hosting.Hooks
+namespace Kantaiko.Hosting.Hooks;
+
+internal class HookHandlerCollection
 {
-    internal class HookHandlerCollection
-    {
-        public MultiValueDictionary<Type, Type> HookHandlers { get; } = new();
-    }
+    public MultiValueDictionary<Type, Type> HookHandlers { get; } = new();
 }

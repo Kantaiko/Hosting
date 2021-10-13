@@ -1,7 +1,6 @@
-﻿namespace Kantaiko.Hosting.Hooks
+﻿namespace Kantaiko.Hosting.Hooks;
+
+public interface IHookHandler<in THook> where THook : IAsyncHook
 {
-    public interface IHookHandler<in THook> where THook : IAsyncHook
-    {
-        void Handle(THook payload);
-    }
+    void Handle(THook payload);
 }

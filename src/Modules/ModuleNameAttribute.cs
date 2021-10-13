@@ -1,20 +1,17 @@
-﻿using System;
+﻿namespace Kantaiko.Hosting.Modules;
 
-namespace Kantaiko.Hosting.Modules
+[AttributeUsage(AttributeTargets.Class)]
+public class ModuleNameAttribute : Attribute, IModuleInfoConfigurationMiddleware
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public class ModuleNameAttribute : Attribute, IModuleInfoConfigurationMiddleware
+    private readonly string _name;
+
+    public ModuleNameAttribute(string name)
     {
-        private readonly string _name;
+        _name = name;
+    }
 
-        public ModuleNameAttribute(string name)
-        {
-            _name = name;
-        }
-
-        public void ConfigureInfo(ModuleInfoOptions options)
-        {
-            options.Name = _name;
-        }
+    public void ConfigureInfo(ModuleInfoOptions options)
+    {
+        options.Name = _name;
     }
 }

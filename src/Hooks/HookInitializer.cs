@@ -1,45 +1,42 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 
-namespace Kantaiko.Hosting.Hooks
+namespace Kantaiko.Hosting.Hooks;
+
+internal class HookInitializer
 {
-    internal class HookInitializer
+    private readonly IHookDispatcher _hookDispatcher;
+    private readonly HookHandlerCollection _hookHandlerCollection;
+
+    public HookInitializer(IHookDispatcher hookDispatcher, HookHandlerCollection hookHandlerCollection)
     {
-        private readonly IHookDispatcher _hookDispatcher;
-        private readonly HookHandlerCollection _hookHandlerCollection;
+        _hookDispatcher = hookDispatcher;
+        _hookHandlerCollection = hookHandlerCollection;
+    }
 
-        public HookInitializer(IHookDispatcher hookDispatcher, HookHandlerCollection hookHandlerCollection)
+    public void Initialize(IReadOnlyList<Assembly> assemblies)
+    {
+        var hookHandlerTypes = assemblies
+            .SelectMany(x => x.GetTypes())
+            .Where(x => x.IsClass && !x.IsAbstract)
+            .ToArray();
+
+        foreach (var hookHandlerType in hookHandlerTypes)
         {
-            _hookDispatcher = hookDispatcher;
-            _hookHandlerCollection = hookHandlerCollection;
+            var hookInterface = hookHandlerType
+                .GetInterfaces()
+                .FirstOrDefault(x => x.IsGenericType &&
+                                     (x.GetGenericTypeDefinition() == typeof(IHookHandler<>) ||
+                                      x.GetGenericTypeDefinition() == typeof(IAsyncHookHandler<>)));
+
+            if (hookInterface is null)
+                continue;
+
+            var eventType = hookInterface.GetGenericArguments()[0];
+            if (!_hookHandlerCollection.HookHandlers.Contains(eventType, hookHandlerType))
+                _hookHandlerCollection.HookHandlers.Add(eventType, hookHandlerType);
         }
 
-        public void Initialize(IReadOnlyList<Assembly> assemblies)
-        {
-            var hookHandlerTypes = assemblies
-                .SelectMany(x => x.GetTypes())
-                .Where(x => x.IsClass && !x.IsAbstract)
-                .ToArray();
-
-            foreach (var hookHandlerType in hookHandlerTypes)
-            {
-                var hookInterface = hookHandlerType
-                    .GetInterfaces()
-                    .FirstOrDefault(x => x.IsGenericType &&
-                                         (x.GetGenericTypeDefinition() == typeof(IHookHandler<>) ||
-                                          x.GetGenericTypeDefinition() == typeof(IAsyncHookHandler<>)));
-
-                if (hookInterface is null)
-                    continue;
-
-                var eventType = hookInterface.GetGenericArguments()[0];
-                if (!_hookHandlerCollection.HookHandlers.Contains(eventType, hookHandlerType))
-                    _hookHandlerCollection.HookHandlers.Add(eventType, hookHandlerType);
-            }
-
-            var applicationInitializedHook = new ApplicationInitializedHook(assemblies);
-            _hookDispatcher.Dispatch(applicationInitializedHook);
-        }
+        var applicationInitializedHook = new ApplicationInitializedHook(assemblies);
+        _hookDispatcher.Dispatch(applicationInitializedHook);
     }
 }

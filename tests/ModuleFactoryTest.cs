@@ -7,93 +7,92 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Hosting.Internal;
 using Xunit;
 
-namespace Kantaiko.Hosting.Tests
+namespace Kantaiko.Hosting.Tests;
+
+public class ModuleFactoryTest
 {
-    public class ModuleFactoryTest
+    [Fact]
+    public void ShouldCreateModuleInstanceWithAdditionalParameters()
     {
-        [Fact]
-        public void ShouldCreateModuleInstanceWithAdditionalParameters()
-        {
-            var moduleFactory = CreateModuleFactory();
+        var moduleFactory = CreateModuleFactory();
 
-            var instance = (TestModuleA) moduleFactory.ConstructModuleInstance(typeof(TestModuleA));
-            Assert.NotNull(instance.Configuration);
-            Assert.NotNull(instance.Environment);
+        var instance = (TestModuleA) moduleFactory.ConstructModuleInstance(typeof(TestModuleA));
+        Assert.NotNull(instance.Configuration);
+        Assert.NotNull(instance.Environment);
+    }
+
+    [Fact]
+    public void ShouldReportInvalidModuleConstructorParameter()
+    {
+        var moduleFactory = CreateModuleFactory();
+
+        void Action()
+        {
+            moduleFactory.ConstructModuleInstance(typeof(TestModuleB));
         }
 
-        [Fact]
-        public void ShouldReportInvalidModuleConstructorParameter()
+        Assert.Throws<ModuleConstructionException>(Action);
+    }
+
+    [Fact]
+    public void ShouldReportMultipleModuleConstructors()
+    {
+        var moduleFactory = CreateModuleFactory();
+
+        void Action()
         {
-            var moduleFactory = CreateModuleFactory();
-
-            void Action()
-            {
-                moduleFactory.ConstructModuleInstance(typeof(TestModuleB));
-            }
-
-            Assert.Throws<ModuleConstructionException>(Action);
+            moduleFactory.ConstructModuleInstance(typeof(TestModuleC));
         }
 
-        [Fact]
-        public void ShouldReportMultipleModuleConstructors()
+        Assert.Throws<ModuleConstructionException>(Action);
+    }
+
+    [Fact]
+    public void ShouldReportInaccessibleModuleConstructor()
+    {
+        var moduleFactory = CreateModuleFactory();
+
+        void Action()
         {
-            var moduleFactory = CreateModuleFactory();
-
-            void Action()
-            {
-                moduleFactory.ConstructModuleInstance(typeof(TestModuleC));
-            }
-
-            Assert.Throws<ModuleConstructionException>(Action);
+            moduleFactory.ConstructModuleInstance(typeof(TestModuleD));
         }
 
-        [Fact]
-        public void ShouldReportInaccessibleModuleConstructor()
+        Assert.Throws<ModuleConstructionException>(Action);
+    }
+
+    private class TestModuleA : IModule
+    {
+        public IConfiguration Configuration { get; }
+        public IHostEnvironment Environment { get; }
+
+        public TestModuleA(IConfiguration configuration, IHostEnvironment environment)
         {
-            var moduleFactory = CreateModuleFactory();
-
-            void Action()
-            {
-                moduleFactory.ConstructModuleInstance(typeof(TestModuleD));
-            }
-
-            Assert.Throws<ModuleConstructionException>(Action);
+            Configuration = configuration;
+            Environment = environment;
         }
+    }
 
-        private class TestModuleA : IModule
-        {
-            public IConfiguration Configuration { get; }
-            public IHostEnvironment Environment { get; }
+    private class TestModuleB
+    {
+        public TestModuleB(string test) { }
+    }
 
-            public TestModuleA(IConfiguration configuration, IHostEnvironment environment)
-            {
-                Configuration = configuration;
-                Environment = environment;
-            }
-        }
+    private class TestModuleC
+    {
+        public TestModuleC(IConfiguration configuration) { }
 
-        private class TestModuleB
-        {
-            public TestModuleB(string test) { }
-        }
+        public TestModuleC(IHostEnvironment hostEnvironment) { }
+    }
 
-        private class TestModuleC
-        {
-            public TestModuleC(IConfiguration configuration) { }
+    private class TestModuleD
+    {
+        private TestModuleD() { }
+    }
 
-            public TestModuleC(IHostEnvironment hostEnvironment) { }
-        }
-
-        private class TestModuleD
-        {
-            private TestModuleD() { }
-        }
-
-        private static ModuleFactory CreateModuleFactory()
-        {
-            var configuration = new ConfigurationRoot(new Collection<IConfigurationProvider>());
-            var hostingEnvironment = new HostingEnvironment();
-            return new ModuleFactory(configuration, hostingEnvironment);
-        }
+    private static ModuleFactory CreateModuleFactory()
+    {
+        var configuration = new ConfigurationRoot(new Collection<IConfigurationProvider>());
+        var hostingEnvironment = new HostingEnvironment();
+        return new ModuleFactory(configuration, hostingEnvironment);
     }
 }

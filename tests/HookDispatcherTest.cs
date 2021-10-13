@@ -1,99 +1,96 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Kantaiko.Hosting.Hooks;
+﻿using Kantaiko.Hosting.Hooks;
 using Kantaiko.Hosting.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Kantaiko.Hosting.Tests
+namespace Kantaiko.Hosting.Tests;
+
+public class HookDispatcherTest
 {
-    public class HookDispatcherTest
+    private class TestHookA : IAsyncHook
     {
-        private class TestHookA : IAsyncHook
+        public bool HandlerInvoked { get; set; }
+    }
+
+    private class TestHookHandlerA : IAsyncHookHandler<TestHookA>
+    {
+        public Task HandleAsync(TestHookA payload, CancellationToken cancellationToken)
         {
-            public bool HandlerInvoked { get; set; }
+            payload.HandlerInvoked = true;
+            return Task.CompletedTask;
         }
+    }
 
-        private class TestHookHandlerA : IAsyncHookHandler<TestHookA>
+    [Fact]
+    public async Task ShouldDispatchAsyncHookToAsyncHandler()
+    {
+        var hookDispatcher = CreateHookDispatcher();
+
+        var testHookA = new TestHookA();
+        await hookDispatcher.DispatchAsync(testHookA);
+
+        Assert.True(testHookA.HandlerInvoked);
+    }
+
+    private class TestHookB : IAsyncHook
+    {
+        public bool HandlerInvoked { get; set; }
+    }
+
+    private class TestHookHandlerB : IHookHandler<TestHookB>
+    {
+        public void Handle(TestHookB payload)
         {
-            public Task HandleAsync(TestHookA payload, CancellationToken cancellationToken)
-            {
-                payload.HandlerInvoked = true;
-                return Task.CompletedTask;
-            }
+            payload.HandlerInvoked = true;
         }
+    }
 
-        [Fact]
-        public async Task ShouldDispatchAsyncHookToAsyncHandler()
+    [Fact]
+    public async Task ShouldDispatchAsyncHookToSyncHandler()
+    {
+        var hookDispatcher = CreateHookDispatcher();
+
+        var testHookB = new TestHookB();
+        await hookDispatcher.DispatchAsync(testHookB);
+
+        Assert.True(testHookB.HandlerInvoked);
+    }
+
+    private class TestHookC : IHook
+    {
+        public bool HandlerInvoked { get; set; }
+    }
+
+    private class TestHookHandlerC : IHookHandler<TestHookC>
+    {
+        public void Handle(TestHookC payload)
         {
-            var hookDispatcher = CreateHookDispatcher();
-
-            var testHookA = new TestHookA();
-            await hookDispatcher.DispatchAsync(testHookA);
-
-            Assert.True(testHookA.HandlerInvoked);
+            payload.HandlerInvoked = true;
         }
+    }
 
-        private class TestHookB : IAsyncHook
-        {
-            public bool HandlerInvoked { get; set; }
-        }
+    [Fact]
+    public async Task ShouldDispatchSyncHookToSyncHandler()
+    {
+        var hookDispatcher = CreateHookDispatcher();
 
-        private class TestHookHandlerB : IHookHandler<TestHookB>
-        {
-            public void Handle(TestHookB payload)
-            {
-                payload.HandlerInvoked = true;
-            }
-        }
+        var testHookC = new TestHookC();
+        await hookDispatcher.DispatchAsync(testHookC);
 
-        [Fact]
-        public async Task ShouldDispatchAsyncHookToSyncHandler()
-        {
-            var hookDispatcher = CreateHookDispatcher();
+        Assert.True(testHookC.HandlerInvoked);
+    }
 
-            var testHookB = new TestHookB();
-            await hookDispatcher.DispatchAsync(testHookB);
+    private static IHookDispatcher CreateHookDispatcher()
+    {
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddLogging();
+        serviceCollection.AddHookHandling();
 
-            Assert.True(testHookB.HandlerInvoked);
-        }
+        var serviceProvider = serviceCollection.BuildServiceProvider();
 
-        private class TestHookC : IHook
-        {
-            public bool HandlerInvoked { get; set; }
-        }
+        var hookInitializer = serviceProvider.GetRequiredService<HookInitializer>();
+        hookInitializer.Initialize(new[] {typeof(HookDispatcherTest).Assembly});
 
-        private class TestHookHandlerC : IHookHandler<TestHookC>
-        {
-            public void Handle(TestHookC payload)
-            {
-                payload.HandlerInvoked = true;
-            }
-        }
-
-        [Fact]
-        public async Task ShouldDispatchSyncHookToSyncHandler()
-        {
-            var hookDispatcher = CreateHookDispatcher();
-
-            var testHookC = new TestHookC();
-            await hookDispatcher.DispatchAsync(testHookC);
-
-            Assert.True(testHookC.HandlerInvoked);
-        }
-
-        private static IHookDispatcher CreateHookDispatcher()
-        {
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddLogging();
-            serviceCollection.AddHookHandling();
-
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-
-            var hookInitializer = serviceProvider.GetRequiredService<HookInitializer>();
-            hookInitializer.Initialize(new[] {typeof(HookDispatcherTest).Assembly});
-
-            return serviceProvider.GetRequiredService<IHookDispatcher>();
-        }
+        return serviceProvider.GetRequiredService<IHookDispatcher>();
     }
 }

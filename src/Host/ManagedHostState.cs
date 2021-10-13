@@ -1,11 +1,10 @@
-﻿namespace Kantaiko.Hosting.Host
+﻿namespace Kantaiko.Hosting.Host;
+
+public enum ManagedHostState
 {
-    public enum ManagedHostState
-    {
-        NotStarted,
-        Starting,
-        Started,
-        Stopping,
-        Restarting
-    }
+    NotStarted,
+    Starting,
+    Started,
+    Stopping,
+    Restarting
 }

@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace Kantaiko.Hosting.Runtime;
 
-namespace Kantaiko.Hosting.Runtime
+public interface IRuntimeHostState
 {
-    public interface IRuntimeHostState
-    {
-        bool RestartRequested { get; }
-        DateTime RestartRequestedAt { get; }
-        Dictionary<string, object> Properties { get; }
+    bool RestartRequested { get; }
+    DateTime RestartRequestedAt { get; }
+    Dictionary<string, object> Properties { get; }
 
-        bool HostRestarted { get; }
-        bool RestartFailed { get; }
-        DateTime RestartCompletedAt { get; }
-        Exception? StartupException { get; }
-    }
+    bool HostRestarted { get; }
+    bool RestartFailed { get; }
+    DateTime RestartCompletedAt { get; }
+    Exception? StartupException { get; }
 }

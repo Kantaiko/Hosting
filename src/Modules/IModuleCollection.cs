@@ -1,7 +1,6 @@
-﻿namespace Kantaiko.Hosting.Modules
+﻿namespace Kantaiko.Hosting.Modules;
+
+public interface IModuleCollection
 {
-    public interface IModuleCollection
-    {
-        public void Add<T>() where T : class, IModule;
-    }
+    public void Add<T>() where T : class, IModule;
 }

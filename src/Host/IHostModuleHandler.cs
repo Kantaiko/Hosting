@@ -1,12 +1,10 @@
-﻿using System;
-using Kantaiko.Hosting.Loader;
+﻿using Kantaiko.Hosting.Loader;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Kantaiko.Hosting.Host
+namespace Kantaiko.Hosting.Host;
+
+public interface IHostModuleHandler
 {
-    public interface IHostModuleHandler
-    {
-        void ConfigureServices(IServiceCollection services, LoadedHost host) { }
-        void Configure(IServiceProvider provider, LoadedHost host) { }
-    }
+    void ConfigureServices(IServiceCollection services, LoadedHost host) { }
+    void Configure(IServiceProvider provider, LoadedHost host) { }
 }

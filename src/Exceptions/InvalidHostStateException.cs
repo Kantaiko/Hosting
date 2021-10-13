@@ -1,22 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Kantaiko.Hosting.Host;
+﻿using Kantaiko.Hosting.Host;
 
-namespace Kantaiko.Hosting.Exceptions
+namespace Kantaiko.Hosting.Exceptions;
+
+public class InvalidHostStateException : KantaikoHostingException
 {
-    public class InvalidHostStateException : KantaikoHostingException
+    public InvalidHostStateException(IReadOnlyList<ManagedHostState> expectedStates, ManagedHostState actual)
+        : base($"Host is in invalid state. Expected: {RenderExpectedStates(expectedStates)}, actual: {actual}.") { }
+
+    private static string RenderExpectedStates(IReadOnlyList<ManagedHostState> expectedStates)
     {
-        public InvalidHostStateException(IReadOnlyList<ManagedHostState> expectedStates, ManagedHostState actual)
-            : base($"Host is in invalid state. Expected: {RenderExpectedStates(expectedStates)}, actual: {actual}.") { }
-
-        private static string RenderExpectedStates(IReadOnlyList<ManagedHostState> expectedStates)
+        if (expectedStates.Count == 1)
         {
-            if (expectedStates.Count == 1)
-            {
-                return expectedStates[0].ToString();
-            }
-
-            return string.Join(", ", expectedStates.SkipLast(1)) + " or " + expectedStates[^1];
+            return expectedStates[0].ToString();
         }
+
+        return string.Join(", ", expectedStates.SkipLast(1)) + " or " + expectedStates[^1];
     }
 }

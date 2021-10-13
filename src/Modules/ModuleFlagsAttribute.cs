@@ -1,19 +1,16 @@
-﻿using System;
+﻿namespace Kantaiko.Hosting.Modules;
 
-namespace Kantaiko.Hosting.Modules
+public class ModuleFlagsAttribute : Attribute, IModuleInfoConfigurationMiddleware
 {
-    public class ModuleFlagsAttribute : Attribute, IModuleInfoConfigurationMiddleware
+    private readonly ModuleFlags _moduleFlags;
+
+    public ModuleFlagsAttribute(ModuleFlags moduleFlags)
     {
-        private readonly ModuleFlags _moduleFlags;
+        _moduleFlags = moduleFlags;
+    }
 
-        public ModuleFlagsAttribute(ModuleFlags moduleFlags)
-        {
-            _moduleFlags = moduleFlags;
-        }
-
-        public void ConfigureInfo(ModuleInfoOptions options)
-        {
-            options.Flags = _moduleFlags;
-        }
+    public void ConfigureInfo(ModuleInfoOptions options)
+    {
+        options.Flags = _moduleFlags;
     }
 }

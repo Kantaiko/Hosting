@@ -1,20 +1,17 @@
-﻿using System;
+﻿namespace Kantaiko.Hosting.Modules;
 
-namespace Kantaiko.Hosting.Modules
+[AttributeUsage(AttributeTargets.Class)]
+public class ModuleVersionAttribute : Attribute, IModuleInfoConfigurationMiddleware
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public class ModuleVersionAttribute : Attribute, IModuleInfoConfigurationMiddleware
+    private readonly Version _version;
+
+    public ModuleVersionAttribute(string version)
     {
-        private readonly Version _version;
+        _version = Version.Parse(version);
+    }
 
-        public ModuleVersionAttribute(string version)
-        {
-            _version = Version.Parse(version);
-        }
-
-        public void ConfigureInfo(ModuleInfoOptions options)
-        {
-            options.Version = _version;
-        }
+    public void ConfigureInfo(ModuleInfoOptions options)
+    {
+        options.Version = _version;
     }
 }

@@ -2,33 +2,32 @@
 using Kantaiko.Hosting.Runtime;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Kantaiko.Hosting.Internal
+namespace Kantaiko.Hosting.Internal;
+
+internal static class ServiceCollectionExtensions
 {
-    internal static class ServiceCollectionExtensions
+    public static void AddManagedHostServices(this IServiceCollection services)
     {
-        public static void AddManagedHostServices(this IServiceCollection services)
-        {
-            services.AddHostedService<KantaikoHostedService>();
+        services.AddHostedService<KantaikoHostedService>();
 
-            services.AddHookHandling();
-            services.AddRuntimeServices();
-        }
+        services.AddHookHandling();
+        services.AddRuntimeServices();
+    }
 
-        public static void AddHookHandling(this IServiceCollection services)
-        {
-            services.AddSingleton<HookHandlerCollection>();
-            services.AddScoped<IHookDispatcher, HookDispatcher>();
+    public static void AddHookHandling(this IServiceCollection services)
+    {
+        services.AddSingleton<HookHandlerCollection>();
+        services.AddScoped<IHookDispatcher, HookDispatcher>();
 
-            services.AddTransient<HookInitializer>();
-        }
+        services.AddTransient<HookInitializer>();
+    }
 
-        public static void AddRuntimeServices(this IServiceCollection services)
-        {
-            services.AddSingleton<RuntimeHostState>();
-            services.AddSingleton<IRuntimeHostState>(sp => sp.GetRequiredService<RuntimeHostState>());
+    public static void AddRuntimeServices(this IServiceCollection services)
+    {
+        services.AddSingleton<RuntimeHostState>();
+        services.AddSingleton<IRuntimeHostState>(sp => sp.GetRequiredService<RuntimeHostState>());
 
-            services.AddSingleton<RuntimeHostManager>();
-            services.AddSingleton<IRuntimeHostManager>(sp => sp.GetRequiredService<RuntimeHostManager>());
-        }
+        services.AddSingleton<RuntimeHostManager>();
+        services.AddSingleton<IRuntimeHostManager>(sp => sp.GetRequiredService<RuntimeHostManager>());
     }
 }

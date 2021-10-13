@@ -1,7 +1,6 @@
-﻿namespace Kantaiko.Hosting.Hooks
+﻿namespace Kantaiko.Hosting.Hooks;
+
+public class ApplicationShutdownHook : IAsyncHook
 {
-    public class ApplicationShutdownHook : IAsyncHook
-    {
         
-    }
 }

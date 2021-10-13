@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using DiffEngine;
 using Kantaiko.Hosting.Exceptions;
 using Kantaiko.Hosting.Internal;
@@ -10,136 +8,135 @@ using Microsoft.Extensions.Hosting.Internal;
 using VerifyXunit;
 using Xunit;
 
-namespace Kantaiko.Hosting.Tests
+namespace Kantaiko.Hosting.Tests;
+
+[UsesVerify]
+public class HostLoaderTest
 {
-    [UsesVerify]
-    public class HostLoaderTest
+    private class TestModuleA : IModule { }
+
+    private class TestModuleB : IModule
     {
-        private class TestModuleA : IModule { }
-
-        private class TestModuleB : IModule
+        public void ConfigureModules(IModuleCollection modules)
         {
-            public void ConfigureModules(IModuleCollection modules)
-            {
-                modules.Add<TestModuleA>();
-            }
+            modules.Add<TestModuleA>();
+        }
+    }
+
+    private class TestModuleC : IModule
+    {
+        public void ConfigureModules(IModuleCollection modules)
+        {
+            modules.Add<TestModuleA>();
+            modules.Add<TestModuleB>();
+        }
+    }
+
+    [Fact]
+    public async Task ShouldLoadHostWithCorrectModuleOrder()
+    {
+        var hostLoader = CreateHostLoader();
+        var moduleCollection = new ModuleCollection();
+
+        moduleCollection.Add<TestModuleC>();
+        moduleCollection.Add<TestModuleB>();
+
+        var loadedHost = hostLoader.Load(moduleCollection);
+
+        DiffTools.UseOrder(DiffTool.Rider, DiffTool.VisualStudioCode);
+
+        await Verifier.Verify(loadedHost)
+            .ModifySerialization(x => x.IgnoreMembers("Version", "Assemblies"))
+            .UseDirectory("__snapshots__");
+    }
+
+    private class TestModuleD : IModule
+    {
+        public void ConfigureModules(IModuleCollection modules)
+        {
+            modules.Add<TestModuleF>();
+        }
+    }
+
+    private class TestModuleE : IModule
+    {
+        public void ConfigureModules(IModuleCollection modules)
+        {
+            modules.Add<TestModuleD>();
+        }
+    }
+
+    private class TestModuleF : IModule
+    {
+        public void ConfigureModules(IModuleCollection modules)
+        {
+            modules.Add<TestModuleE>();
+        }
+    }
+
+    [Fact]
+    public void ShouldReportCircularDependency()
+    {
+        var hostLoader = CreateHostLoader();
+        var moduleCollection = new ModuleCollection();
+
+        moduleCollection.Add<TestModuleF>();
+
+        void Action()
+        {
+            hostLoader.Load(moduleCollection);
         }
 
-        private class TestModuleC : IModule
+        var exception = Assert.Throws<CircularDependencyException>(Action);
+        Assert.Equal(typeof(TestModuleD), exception.First.Id.ModuleType);
+        Assert.Equal(typeof(TestModuleF), exception.Second.Id.ModuleType);
+    }
+
+    private const string TestCustomProperty = nameof(TestCustomProperty);
+
+    private class CustomPropertyAttribute : Attribute, IModuleInfoConfigurationMiddleware
+    {
+        private readonly int _value;
+
+        public CustomPropertyAttribute(int value)
         {
-            public void ConfigureModules(IModuleCollection modules)
-            {
-                modules.Add<TestModuleA>();
-                modules.Add<TestModuleB>();
-            }
+            _value = value;
         }
 
-        [Fact]
-        public async Task ShouldLoadHostWithCorrectModuleOrder()
+        public void ConfigureInfo(ModuleInfoOptions options)
         {
-            var hostLoader = CreateHostLoader();
-            var moduleCollection = new ModuleCollection();
-
-            moduleCollection.Add<TestModuleC>();
-            moduleCollection.Add<TestModuleB>();
-
-            var loadedHost = hostLoader.Load(moduleCollection);
-
-            DiffTools.UseOrder(DiffTool.Rider, DiffTool.VisualStudioCode);
-
-            await Verifier.Verify(loadedHost)
-                .ModifySerialization(x => x.IgnoreMembers("Version", "Assemblies"))
-                .UseDirectory("__snapshots__");
+            options.Properties[TestCustomProperty] = _value;
         }
+    }
 
-        private class TestModuleD : IModule
-        {
-            public void ConfigureModules(IModuleCollection modules)
-            {
-                modules.Add<TestModuleF>();
-            }
-        }
+    [ModuleName("G")]
+    [ModuleVersion("42.42.42")]
+    [ModuleFlags(ModuleFlags.Library)]
+    [CustomProperty(42)]
+    private class TestModuleG : IModule { }
 
-        private class TestModuleE : IModule
-        {
-            public void ConfigureModules(IModuleCollection modules)
-            {
-                modules.Add<TestModuleD>();
-            }
-        }
+    [Fact]
+    public void ShouldLoadModuleWithInfo()
+    {
+        var hostLoader = CreateHostLoader();
+        var moduleCollection = new ModuleCollection();
 
-        private class TestModuleF : IModule
-        {
-            public void ConfigureModules(IModuleCollection modules)
-            {
-                modules.Add<TestModuleE>();
-            }
-        }
+        moduleCollection.Add<TestModuleG>();
 
-        [Fact]
-        public void ShouldReportCircularDependency()
-        {
-            var hostLoader = CreateHostLoader();
-            var moduleCollection = new ModuleCollection();
+        var loadedHost = hostLoader.Load(moduleCollection);
+        var module = loadedHost.HostInfo.Modules[0];
 
-            moduleCollection.Add<TestModuleF>();
+        Assert.Equal("G", module.DisplayName);
+        Assert.Equal(Version.Parse("42.42.42"), module.Version);
+        Assert.Equal(ModuleFlags.Library, module.Flags);
+        Assert.Equal(42, module.Properties[TestCustomProperty]);
+    }
 
-            void Action()
-            {
-                hostLoader.Load(moduleCollection);
-            }
-
-            var exception = Assert.Throws<CircularDependencyException>(Action);
-            Assert.Equal(typeof(TestModuleD), exception.First.Id.ModuleType);
-            Assert.Equal(typeof(TestModuleF), exception.Second.Id.ModuleType);
-        }
-
-        private const string TestCustomProperty = nameof(TestCustomProperty);
-
-        private class CustomPropertyAttribute : Attribute, IModuleInfoConfigurationMiddleware
-        {
-            private readonly int _value;
-
-            public CustomPropertyAttribute(int value)
-            {
-                _value = value;
-            }
-
-            public void ConfigureInfo(ModuleInfoOptions options)
-            {
-                options.Properties[TestCustomProperty] = _value;
-            }
-        }
-
-        [ModuleName("G")]
-        [ModuleVersion("42.42.42")]
-        [ModuleFlags(ModuleFlags.Library)]
-        [CustomProperty(42)]
-        private class TestModuleG : IModule { }
-
-        [Fact]
-        public void ShouldLoadModuleWithInfo()
-        {
-            var hostLoader = CreateHostLoader();
-            var moduleCollection = new ModuleCollection();
-
-            moduleCollection.Add<TestModuleG>();
-
-            var loadedHost = hostLoader.Load(moduleCollection);
-            var module = loadedHost.HostInfo.Modules[0];
-
-            Assert.Equal("G", module.DisplayName);
-            Assert.Equal(Version.Parse("42.42.42"), module.Version);
-            Assert.Equal(ModuleFlags.Library, module.Flags);
-            Assert.Equal(42, module.Properties[TestCustomProperty]);
-        }
-
-        private static HostLoader CreateHostLoader()
-        {
-            var configuration = new ConfigurationRoot(new Collection<IConfigurationProvider>());
-            var hostingEnvironment = new HostingEnvironment();
-            var hostLoader = new HostLoader(configuration, hostingEnvironment);
-            return hostLoader;
-        }
+    private static HostLoader CreateHostLoader()
+    {
+        var configuration = new ConfigurationRoot(new Collection<IConfigurationProvider>());
+        var hostingEnvironment = new HostingEnvironment();
+        var hostLoader = new HostLoader(configuration, hostingEnvironment);
+        return hostLoader;
     }
 }

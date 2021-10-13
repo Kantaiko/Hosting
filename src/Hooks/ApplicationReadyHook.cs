@@ -1,4 +1,3 @@
-﻿namespace Kantaiko.Hosting.Hooks
-{
-    public class ApplicationReadyHook : IAsyncHook { }
-}
+﻿namespace Kantaiko.Hosting.Hooks;
+
+public class ApplicationReadyHook : IAsyncHook { }

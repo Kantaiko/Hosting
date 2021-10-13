@@ -1,46 +1,44 @@
-﻿using System;
-using Kantaiko.Hosting.Hooks;
+﻿using Kantaiko.Hosting.Hooks;
 using Kantaiko.Hosting.Host;
 using Kantaiko.Hosting.Loader;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Kantaiko.Hosting.Internal
+namespace Kantaiko.Hosting.Internal;
+
+internal class ServiceProviderFactory : IServiceProviderFactory<IServiceCollection>
 {
-    internal class ServiceProviderFactory : IServiceProviderFactory<IServiceCollection>
+    private readonly LoadedHost _loadedHost;
+    private readonly IHostModuleHandler? _moduleLoaderHandler;
+
+    public ServiceProviderFactory(LoadedHost loadedHost, IHostModuleHandler? moduleLoaderHandler)
     {
-        private readonly LoadedHost _loadedHost;
-        private readonly IHostModuleHandler? _moduleLoaderHandler;
+        _loadedHost = loadedHost;
+        _moduleLoaderHandler = moduleLoaderHandler;
+    }
 
-        public ServiceProviderFactory(LoadedHost loadedHost, IHostModuleHandler? moduleLoaderHandler)
+    public IServiceCollection CreateBuilder(IServiceCollection services)
+    {
+        services.AddSingleton(_loadedHost.HostInfo);
+
+        foreach (var module in _loadedHost.Modules)
         {
-            _loadedHost = loadedHost;
-            _moduleLoaderHandler = moduleLoaderHandler;
+            module.Instance.ConfigureServices(services);
         }
 
-        public IServiceCollection CreateBuilder(IServiceCollection services)
-        {
-            services.AddSingleton(_loadedHost.HostInfo);
+        _moduleLoaderHandler?.ConfigureServices(services, _loadedHost);
 
-            foreach (var module in _loadedHost.Modules)
-            {
-                module.Instance.ConfigureServices(services);
-            }
+        return services;
+    }
 
-            _moduleLoaderHandler?.ConfigureServices(services, _loadedHost);
+    public IServiceProvider CreateServiceProvider(IServiceCollection containerBuilder)
+    {
+        var serviceProvider = containerBuilder.BuildServiceProvider();
 
-            return services;
-        }
+        var hookInitializer = serviceProvider.GetRequiredService<HookInitializer>();
+        hookInitializer.Initialize(_loadedHost.HostInfo.Assemblies);
 
-        public IServiceProvider CreateServiceProvider(IServiceCollection containerBuilder)
-        {
-            var serviceProvider = containerBuilder.BuildServiceProvider();
+        _moduleLoaderHandler?.Configure(serviceProvider, _loadedHost);
 
-            var hookInitializer = serviceProvider.GetRequiredService<HookInitializer>();
-            hookInitializer.Initialize(_loadedHost.HostInfo.Assemblies);
-
-            _moduleLoaderHandler?.Configure(serviceProvider, _loadedHost);
-
-            return serviceProvider;
-        }
+        return serviceProvider;
     }
 }
