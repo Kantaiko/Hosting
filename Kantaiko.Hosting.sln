@@ -1,8 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantaiko.Hosting", "src\Kantaiko.Hosting.csproj", "{A6C359DD-2841-403C-9710-965E8E6C9B73}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantaiko.Hosting", "src\Kantaiko.Hosting\Kantaiko.Hosting.csproj", "{31B1FA42-9475-4140-90DF-199448DC0ACC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantaiko.Hosting.Tests", "tests\Kantaiko.Hosting.Tests.csproj", "{BAD0D3D8-794A-4649-9607-C28E14E867A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantaiko.Hosting.Hooks", "src\Kantaiko.Hosting.Hooks\Kantaiko.Hosting.Hooks.csproj", "{112AEEBA-3224-4618-9070-C958470739D6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0CD4127E-F037-48BD-9454-A95139E72C31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantaiko.Hosting.Tests", "tests\Kantaiko.Hosting.Tests\Kantaiko.Hosting.Tests.csproj", "{9F27E713-8E32-48AB-85C1-9169097A2140}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantaiko.Hosting.Hooks.Tests", "tests\Kantaiko.Hosting.Hooks.Tests\Kantaiko.Hosting.Hooks.Tests.csproj", "{2D2A55F2-1A76-419A-8D49-57AE0107D3CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,13 +16,25 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A6C359DD-2841-403C-9710-965E8E6C9B73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A6C359DD-2841-403C-9710-965E8E6C9B73}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A6C359DD-2841-403C-9710-965E8E6C9B73}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A6C359DD-2841-403C-9710-965E8E6C9B73}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BAD0D3D8-794A-4649-9607-C28E14E867A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BAD0D3D8-794A-4649-9607-C28E14E867A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BAD0D3D8-794A-4649-9607-C28E14E867A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BAD0D3D8-794A-4649-9607-C28E14E867A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31B1FA42-9475-4140-90DF-199448DC0ACC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31B1FA42-9475-4140-90DF-199448DC0ACC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31B1FA42-9475-4140-90DF-199448DC0ACC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31B1FA42-9475-4140-90DF-199448DC0ACC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{112AEEBA-3224-4618-9070-C958470739D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{112AEEBA-3224-4618-9070-C958470739D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{112AEEBA-3224-4618-9070-C958470739D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{112AEEBA-3224-4618-9070-C958470739D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F27E713-8E32-48AB-85C1-9169097A2140}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F27E713-8E32-48AB-85C1-9169097A2140}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F27E713-8E32-48AB-85C1-9169097A2140}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F27E713-8E32-48AB-85C1-9169097A2140}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D2A55F2-1A76-419A-8D49-57AE0107D3CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D2A55F2-1A76-419A-8D49-57AE0107D3CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D2A55F2-1A76-419A-8D49-57AE0107D3CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D2A55F2-1A76-419A-8D49-57AE0107D3CB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9F27E713-8E32-48AB-85C1-9169097A2140} = {0CD4127E-F037-48BD-9454-A95139E72C31}
+		{2D2A55F2-1A76-419A-8D49-57AE0107D3CB} = {0CD4127E-F037-48BD-9454-A95139E72C31}
 	EndGlobalSection
 EndGlobal
