@@ -1,4 +1,11 @@
 # Change Log\n\nAll notable changes to this project will be documented in this file. See [versionize](https://github.com/saintedlama/versionize) for commit guidelines.\n
+<a name="0.3.2"></a>
+## [0.3.2](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.3.2) (2021-10-18)
+
+### Bug Fixes
+
+* Allow hooks usage with regular host ([5fd192e](https://www.github.com/Kantaiko/Hosting/commit/5fd192e26ee6371b6fab6ec45ec7dd73c03137f3))
+
 <a name="0.3.1"></a>
 ## [0.3.1](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.3.1) (2021-10-18)
 
