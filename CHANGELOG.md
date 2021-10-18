@@ -1,4 +1,11 @@
 # Change Log\n\nAll notable changes to this project will be documented in this file. See [versionize](https://github.com/saintedlama/versionize) for commit guidelines.\n
+<a name="0.3.0"></a>
+## [0.3.0](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.3.0) (2021-10-18)
+
+### Features
+
+* Redesign host lifecycle, extract hooks to another package ([524425a](https://www.github.com/Kantaiko/Hosting/commit/524425ac42c48cb76a563d26ea9a4924d0ea89b9))
+
 <a name="0.2.1"></a>
 ## [0.2.1](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.2.1) (2021-9-26)
 
