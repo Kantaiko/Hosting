@@ -1,5 +1,5 @@
 using Kantaiko.Hosting.Hooks.ApplicationHooks;
-using Kantaiko.Hosting.Loader;
+using Kantaiko.Hosting.Introspection;
 using Microsoft.Extensions.Hosting;
 
 namespace Kantaiko.Hosting.Hooks;
@@ -9,20 +9,20 @@ internal class HookHostedService : IHostedService
     private readonly HookInitializer _hookInitializer;
     private readonly IHostApplicationLifetime _applicationLifetime;
     private readonly IHookDispatcher _hookDispatcher;
-    private readonly LoadedHost _loadedHost;
+    private readonly HostInfo _hostInfo;
 
     public HookHostedService(HookInitializer hookInitializer, IHostApplicationLifetime applicationLifetime,
-        IHookDispatcher hookDispatcher, LoadedHost loadedHost)
+        IHookDispatcher hookDispatcher, HostInfo hostInfo)
     {
         _hookInitializer = hookInitializer;
         _applicationLifetime = applicationLifetime;
         _hookDispatcher = hookDispatcher;
-        _loadedHost = loadedHost;
+        _hostInfo = hostInfo;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        _hookInitializer.Initialize(_loadedHost.HostInfo.Assemblies);
+        _hookInitializer.Initialize(_hostInfo.Assemblies);
 
         var applicationStartupHook = new ApplicationStartupHook();
         await _hookDispatcher.DispatchAsync(applicationStartupHook, cancellationToken);
