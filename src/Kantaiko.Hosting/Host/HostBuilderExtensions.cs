@@ -34,7 +34,7 @@ public static class HostBuilderExtensions
             var hostLoader = new HostLoader(context.Configuration, context.HostingEnvironment);
             var loadedHost = hostLoader.Load(moduleCollection);
 
-            services.AddSingleton(loadedHost);
+            services.AddSingleton(loadedHost.HostInfo);
 
             foreach (var loadedHostModule in loadedHost.Modules)
             {
