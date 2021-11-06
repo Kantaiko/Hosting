@@ -1,4 +1,11 @@
 # Change Log\n\nAll notable changes to this project will be documented in this file. See [versionize](https://github.com/saintedlama/versionize) for commit guidelines.\n
+<a name="0.3.3"></a>
+## [0.3.3](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.3.3) (2021-11-6)
+
+### Bug Fixes
+
+* Expose HostInfo instead of LoadedHost ([b546b86](https://www.github.com/Kantaiko/Hosting/commit/b546b86532ee5f9b95b7b4b7857157c52fe6cd41))
+
 <a name="0.3.2"></a>
 ## [0.3.2](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.3.2) (2021-10-18)
 
