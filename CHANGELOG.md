@@ -1,4 +1,11 @@
 # Change Log\n\nAll notable changes to this project will be documented in this file. See [versionize](https://github.com/saintedlama/versionize) for commit guidelines.\n
+<a name="0.3.4"></a>
+## [0.3.4](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.3.4) (2021-11-6)
+
+### Bug Fixes
+
+* Use HostInfo instead of LoadedHost in HookHostedService ([e5f7dc8](https://www.github.com/Kantaiko/Hosting/commit/e5f7dc8a70a44007fa6d0035ff87f9c02c90558f))
+
 <a name="0.3.3"></a>
 ## [0.3.3](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.3.3) (2021-11-6)
 
