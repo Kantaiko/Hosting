@@ -1,4 +1,11 @@
 # Change Log\n\nAll notable changes to this project will be documented in this file. See [versionize](https://github.com/saintedlama/versionize) for commit guidelines.\n
+<a name="0.3.5"></a>
+## [0.3.5](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.3.5) (2021-11-7)
+
+### Bug Fixes
+
+* Replace HookDispatcher lifetime with transient to allow using it in singleton services ([0747923](https://www.github.com/Kantaiko/Hosting/commit/07479237d07514654687e0f78816a816608fd3c5))
+
 <a name="0.3.4"></a>
 ## [0.3.4](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.3.4) (2021-11-6)
 
