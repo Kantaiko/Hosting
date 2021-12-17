@@ -2,13 +2,19 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantaiko.Hosting", "src\Kantaiko.Hosting\Kantaiko.Hosting.csproj", "{31B1FA42-9475-4140-90DF-199448DC0ACC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantaiko.Hosting.Hooks", "src\Kantaiko.Hosting.Hooks\Kantaiko.Hosting.Hooks.csproj", "{112AEEBA-3224-4618-9070-C958470739D6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantaiko.Hosting.Lifecycle", "src\Kantaiko.Hosting.Lifecycle\Kantaiko.Hosting.Lifecycle.csproj", "{112AEEBA-3224-4618-9070-C958470739D6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0CD4127E-F037-48BD-9454-A95139E72C31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantaiko.Hosting.Tests", "tests\Kantaiko.Hosting.Tests\Kantaiko.Hosting.Tests.csproj", "{9F27E713-8E32-48AB-85C1-9169097A2140}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantaiko.Hosting.Modularity.Tests", "tests\Kantaiko.Hosting.Modularity.Tests\Kantaiko.Hosting.Modularity.Tests.csproj", "{9F27E713-8E32-48AB-85C1-9169097A2140}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantaiko.Hosting.Hooks.Tests", "tests\Kantaiko.Hosting.Hooks.Tests\Kantaiko.Hosting.Hooks.Tests.csproj", "{2D2A55F2-1A76-419A-8D49-57AE0107D3CB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantaiko.Hosting.Managed.Tests", "tests\Kantaiko.Hosting.Managed.Tests\Kantaiko.Hosting.Managed.Tests.csproj", "{2D2A55F2-1A76-419A-8D49-57AE0107D3CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantaiko.Hosting.Modularity", "src\Kantaiko.Hosting.Modularity\Kantaiko.Hosting.Modularity.csproj", "{3F290D17-40E2-4253-B471-695B2ACCD9B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantaiko.Hosting.Managed", "src\Kantaiko.Hosting.Managed\Kantaiko.Hosting.Managed.csproj", "{6CA470EA-6ACF-4D61-A78B-28F07EFB7932}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kantaiko.Hosting.Lifecycle.Tests", "tests\Kantaiko.Hosting.Lifecycle.Tests\Kantaiko.Hosting.Lifecycle.Tests.csproj", "{F9BEE556-1AAF-47B6-8A6F-F5FCD551B6D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,9 +38,22 @@ Global
 		{2D2A55F2-1A76-419A-8D49-57AE0107D3CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D2A55F2-1A76-419A-8D49-57AE0107D3CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D2A55F2-1A76-419A-8D49-57AE0107D3CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F290D17-40E2-4253-B471-695B2ACCD9B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F290D17-40E2-4253-B471-695B2ACCD9B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F290D17-40E2-4253-B471-695B2ACCD9B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F290D17-40E2-4253-B471-695B2ACCD9B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CA470EA-6ACF-4D61-A78B-28F07EFB7932}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CA470EA-6ACF-4D61-A78B-28F07EFB7932}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CA470EA-6ACF-4D61-A78B-28F07EFB7932}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CA470EA-6ACF-4D61-A78B-28F07EFB7932}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9BEE556-1AAF-47B6-8A6F-F5FCD551B6D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9BEE556-1AAF-47B6-8A6F-F5FCD551B6D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9BEE556-1AAF-47B6-8A6F-F5FCD551B6D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9BEE556-1AAF-47B6-8A6F-F5FCD551B6D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9F27E713-8E32-48AB-85C1-9169097A2140} = {0CD4127E-F037-48BD-9454-A95139E72C31}
 		{2D2A55F2-1A76-419A-8D49-57AE0107D3CB} = {0CD4127E-F037-48BD-9454-A95139E72C31}
+		{F9BEE556-1AAF-47B6-8A6F-F5FCD551B6D0} = {0CD4127E-F037-48BD-9454-A95139E72C31}
 	EndGlobalSection
 EndGlobal

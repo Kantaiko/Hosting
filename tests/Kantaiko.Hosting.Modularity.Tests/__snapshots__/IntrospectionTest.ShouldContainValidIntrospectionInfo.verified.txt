@@ -1,0 +1,344 @@
+﻿{
+  Modules: [
+    {
+      Metadata: {
+        DisplayName: ModuleA,
+        Properties: {
+          Objects: []
+        }
+      },
+      Id: {
+        ModuleType: IntrospectionTest.ModuleA
+      },
+      DisplayName: ModuleA,
+      Properties: {
+        Objects: []
+      },
+      Dependents: [
+        {
+          Metadata: {
+            DisplayName: ModuleB,
+            Properties: {
+              Objects: []
+            }
+          },
+          Id: {
+            ModuleType: IntrospectionTest.ModuleB
+          },
+          DisplayName: ModuleB,
+          Properties: {
+            Objects: []
+          },
+          Dependencies: [
+            {
+              Metadata: {
+                DisplayName: Test,
+                Properties: {
+                  Objects: []
+                }
+              },
+              Id: {
+                ModuleType: IntrospectionTest.TestModule
+              },
+              DisplayName: Test,
+              Properties: {
+                Objects: []
+              },
+              Dependencies: [
+                {
+                  Metadata: {
+                    DisplayName: CustomTitle,
+                    Properties: {
+                      Objects: []
+                    }
+                  },
+                  Id: {
+                    ModuleType: IntrospectionTest.ModuleC
+                  },
+                  DisplayName: CustomTitle,
+                  Properties: {
+                    Objects: []
+                  },
+                  Dependents: []
+                }
+              ],
+              Dependents: []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      Metadata: {
+        DisplayName: CustomTitle,
+        Properties: {
+          Objects: []
+        }
+      },
+      Id: {
+        ModuleType: IntrospectionTest.ModuleC
+      },
+      DisplayName: CustomTitle,
+      Properties: {
+        Objects: []
+      },
+      Dependents: [
+        {
+          Metadata: {
+            DisplayName: Test,
+            Properties: {
+              Objects: []
+            }
+          },
+          Id: {
+            ModuleType: IntrospectionTest.TestModule
+          },
+          DisplayName: Test,
+          Properties: {
+            Objects: []
+          },
+          Dependencies: [],
+          Dependents: [
+            {
+              Metadata: {
+                DisplayName: ModuleB,
+                Properties: {
+                  Objects: []
+                }
+              },
+              Id: {
+                ModuleType: IntrospectionTest.ModuleB
+              },
+              DisplayName: ModuleB,
+              Properties: {
+                Objects: []
+              },
+              Dependencies: [
+                {
+                  Metadata: {
+                    DisplayName: ModuleA,
+                    Properties: {
+                      Objects: []
+                    }
+                  },
+                  Id: {
+                    ModuleType: IntrospectionTest.ModuleA
+                  },
+                  DisplayName: ModuleA,
+                  Properties: {
+                    Objects: []
+                  },
+                  Dependents: []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      Metadata: {
+        DisplayName: Test,
+        Properties: {
+          Objects: []
+        }
+      },
+      Id: {
+        ModuleType: IntrospectionTest.TestModule
+      },
+      DisplayName: Test,
+      Properties: {
+        Objects: []
+      },
+      Dependencies: [
+        {
+          Metadata: {
+            DisplayName: CustomTitle,
+            Properties: {
+              Objects: []
+            }
+          },
+          Id: {
+            ModuleType: IntrospectionTest.ModuleC
+          },
+          DisplayName: CustomTitle,
+          Properties: {
+            Objects: []
+          },
+          Dependents: []
+        }
+      ],
+      Dependents: [
+        {
+          Metadata: {
+            DisplayName: ModuleB,
+            Properties: {
+              Objects: []
+            }
+          },
+          Id: {
+            ModuleType: IntrospectionTest.ModuleB
+          },
+          DisplayName: ModuleB,
+          Properties: {
+            Objects: []
+          },
+          Dependencies: [
+            {
+              Metadata: {
+                DisplayName: ModuleA,
+                Properties: {
+                  Objects: []
+                }
+              },
+              Id: {
+                ModuleType: IntrospectionTest.ModuleA
+              },
+              DisplayName: ModuleA,
+              Properties: {
+                Objects: []
+              },
+              Dependents: []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      Metadata: {
+        DisplayName: ModuleB,
+        Properties: {
+          Objects: []
+        }
+      },
+      Id: {
+        ModuleType: IntrospectionTest.ModuleB
+      },
+      DisplayName: ModuleB,
+      Properties: {
+        Objects: []
+      },
+      Dependencies: [
+        {
+          Metadata: {
+            DisplayName: ModuleA,
+            Properties: {
+              Objects: []
+            }
+          },
+          Id: {
+            ModuleType: IntrospectionTest.ModuleA
+          },
+          DisplayName: ModuleA,
+          Properties: {
+            Objects: []
+          },
+          Dependents: []
+        },
+        {
+          Metadata: {
+            DisplayName: Test,
+            Properties: {
+              Objects: []
+            }
+          },
+          Id: {
+            ModuleType: IntrospectionTest.TestModule
+          },
+          DisplayName: Test,
+          Properties: {
+            Objects: []
+          },
+          Dependencies: [
+            {
+              Metadata: {
+                DisplayName: CustomTitle,
+                Properties: {
+                  Objects: []
+                }
+              },
+              Id: {
+                ModuleType: IntrospectionTest.ModuleC
+              },
+              DisplayName: CustomTitle,
+              Properties: {
+                Objects: []
+              },
+              Dependents: []
+            }
+          ],
+          Dependents: []
+        }
+      ]
+    }
+  ],
+  ExplicitModules: [
+    {
+      Metadata: {
+        DisplayName: ModuleB,
+        Properties: {
+          Objects: []
+        }
+      },
+      Id: {
+        ModuleType: IntrospectionTest.ModuleB
+      },
+      DisplayName: ModuleB,
+      Properties: {
+        Objects: []
+      },
+      Dependencies: [
+        {
+          Metadata: {
+            DisplayName: ModuleA,
+            Properties: {
+              Objects: []
+            }
+          },
+          Id: {
+            ModuleType: IntrospectionTest.ModuleA
+          },
+          DisplayName: ModuleA,
+          Properties: {
+            Objects: []
+          },
+          Dependents: []
+        },
+        {
+          Metadata: {
+            DisplayName: Test,
+            Properties: {
+              Objects: []
+            }
+          },
+          Id: {
+            ModuleType: IntrospectionTest.TestModule
+          },
+          DisplayName: Test,
+          Properties: {
+            Objects: []
+          },
+          Dependencies: [
+            {
+              Metadata: {
+                DisplayName: CustomTitle,
+                Properties: {
+                  Objects: []
+                }
+              },
+              Id: {
+                ModuleType: IntrospectionTest.ModuleC
+              },
+              DisplayName: CustomTitle,
+              Properties: {
+                Objects: []
+              },
+              Dependents: []
+            }
+          ],
+          Dependents: []
+        }
+      ]
+    }
+  ]
+}
