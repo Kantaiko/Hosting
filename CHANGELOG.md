@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/saintedlama/versionize) for commit guidelines.
 
+<a name="0.4.0"></a>
+## [0.4.0](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.4.0) (2021-12-17)
+
+### Bug Fixes
+
+* Add application hooks dispatching ([f5a6031](https://www.github.com/Kantaiko/Hosting/commit/f5a6031733d88a659441345f1653a1145726da80))
+* Allow hooks usage with regular host ([5fd192e](https://www.github.com/Kantaiko/Hosting/commit/5fd192e26ee6371b6fab6ec45ec7dd73c03137f3))
+* Downgrade Microsoft.Extensions.Hosting ([fe52088](https://www.github.com/Kantaiko/Hosting/commit/fe520886e37abc040cb89efe5a24e20fd240cc71))
+* Expose HostInfo instead of LoadedHost ([b546b86](https://www.github.com/Kantaiko/Hosting/commit/b546b86532ee5f9b95b7b4b7857157c52fe6cd41))
+* Fix shutdown notification ([9823b75](https://www.github.com/Kantaiko/Hosting/commit/9823b7544fb318fef563e0e955ed25f010ac2dbf))
+* Replace HookDispatcher lifetime with transient to allow using it in singleton services ([0747923](https://www.github.com/Kantaiko/Hosting/commit/07479237d07514654687e0f78816a816608fd3c5))
+* Use HostInfo instead of LoadedHost in HookHostedService ([e5f7dc8](https://www.github.com/Kantaiko/Hosting/commit/e5f7dc8a70a44007fa6d0035ff87f9c02c90558f))
+
+### Features
+
+* Add ability to use kantaiko hosting in custom host builder ([2cff3d1](https://www.github.com/Kantaiko/Hosting/commit/2cff3d1c7e1ab2190c895356cd9607a9808bae2d))
+* Redesign host lifecycle, extract hooks to another package ([524425a](https://www.github.com/Kantaiko/Hosting/commit/524425ac42c48cb76a563d26ea9a4924d0ea89b9))
+* Redesign hosting infrastructure, split modularity, lifecycle and managed host into separate packages ([d8ae69d](https://www.github.com/Kantaiko/Hosting/commit/d8ae69da53d21f6fd5771a2f0701d73ecdc0e59c))
+
 <a name="0.3.5"></a>
 ## [0.3.5](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.3.5) (2021-11-7)
 
