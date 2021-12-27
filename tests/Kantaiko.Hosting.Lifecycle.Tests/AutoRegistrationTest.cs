@@ -1,6 +1,7 @@
 using System.Reflection;
 using Kantaiko.Hosting.Lifecycle.Events;
 using Kantaiko.Routing;
+using Kantaiko.Routing.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Xunit;
@@ -43,7 +44,7 @@ public class AutoRegistrationTest
             _testState = testState;
         }
 
-        public override Task<Unit> Handle(LifecycleEventContext<ApplicationStartingEvent> context)
+        protected override Task<Unit> HandleAsync(IEventContext<ApplicationStartingEvent> context)
         {
             Assert.Equal(0, _testState.Count++);
             return Unit.Task;
@@ -59,7 +60,7 @@ public class AutoRegistrationTest
             _testState = testState;
         }
 
-        public override Task<Unit> Handle(LifecycleEventContext<ApplicationStartedEvent> context)
+        protected override Task<Unit> HandleAsync(IEventContext<ApplicationStartedEvent> context)
         {
             Assert.Equal(1, _testState.Count++);
             return Unit.Task;
@@ -75,7 +76,7 @@ public class AutoRegistrationTest
             _testState = testState;
         }
 
-        public override Task<Unit> Handle(LifecycleEventContext<ApplicationStoppingEvent> context)
+        protected override Task<Unit> HandleAsync(IEventContext<ApplicationStoppingEvent> context)
         {
             Assert.Equal(2, _testState.Count++);
             return Unit.Task;
@@ -91,7 +92,7 @@ public class AutoRegistrationTest
             _testState = testState;
         }
 
-        public override Task<Unit> Handle(LifecycleEventContext<ApplicationStoppedEvent> context)
+        protected override Task<Unit> HandleAsync(IEventContext<ApplicationStoppedEvent> context)
         {
             Assert.Equal(3, _testState.Count++);
             return Unit.Task;

@@ -1,51 +1,49 @@
-using System.Collections.Immutable;
+using System.Reflection;
 using Kantaiko.Hosting.Lifecycle.Events;
 using Kantaiko.Routing;
 using Kantaiko.Routing.AutoRegistration;
+using Kantaiko.Routing.Events;
 
 namespace Kantaiko.Hosting.Lifecycle;
 
 public class ApplicationLifecycle : IApplicationLifecycle
 {
-    private IHandler<LifecycleEventContext<ApplicationStartingEvent>, Task<Unit>> _applicationStarting;
-    private IHandler<LifecycleEventContext<ApplicationStartedEvent>, Task<Unit>> _applicationStarted;
-    private IHandler<LifecycleEventContext<ApplicationStoppingEvent>, Task<Unit>> _applicationStopping;
-    private IHandler<LifecycleEventContext<ApplicationStoppedEvent>, Task<Unit>> _applicationStopped;
+    private IHandler<IEventContext<ApplicationStartingEvent>, Task<Unit>> _applicationStarting;
+    private IHandler<IEventContext<ApplicationStartedEvent>, Task<Unit>> _applicationStarted;
+    private IHandler<IEventContext<ApplicationStoppingEvent>, Task<Unit>> _applicationStopping;
+    private IHandler<IEventContext<ApplicationStoppedEvent>, Task<Unit>> _applicationStopped;
 
     public ApplicationLifecycle()
     {
-        _applicationStarting = Handler.EmptyAsync<LifecycleEventContext<ApplicationStartingEvent>>();
-        _applicationStarted = Handler.EmptyAsync<LifecycleEventContext<ApplicationStartedEvent>>();
-        _applicationStopping = Handler.EmptyAsync<LifecycleEventContext<ApplicationStoppingEvent>>();
-        _applicationStopped = Handler.EmptyAsync<LifecycleEventContext<ApplicationStoppedEvent>>();
+        _applicationStarting = Handler.EmptyAsync<IEventContext<ApplicationStartingEvent>>();
+        _applicationStarted = Handler.EmptyAsync<IEventContext<ApplicationStartedEvent>>();
+        _applicationStopping = Handler.EmptyAsync<IEventContext<ApplicationStoppingEvent>>();
+        _applicationStopped = Handler.EmptyAsync<IEventContext<ApplicationStoppedEvent>>();
     }
 
     public ApplicationLifecycle(IEnumerable<Type> types)
     {
-        var typeCollection = types is ICollection<Type> collection ? collection : types.ToImmutableArray();
+        types = types.Concat(Assembly.GetExecutingAssembly().GetTypes());
+        var typeCollection = AutoRegistrationUtils.MaterializeCollection(types);
 
-        _applicationStarting = Handler.SequentialAsync(HandlerAutoRegistrationService
-            .GetTransientHandlers<LifecycleEventContext<ApplicationStartingEvent>, Task<Unit>>(typeCollection,
-                ServiceHandlerFactory.Instance));
+        _applicationStarting = EventHandlerFactory
+            .CreateSequentialEventHandler<ApplicationStartingEvent>(typeCollection, ServiceHandlerFactory.Instance);
 
-        _applicationStarted = Handler.ParallelAsync(HandlerAutoRegistrationService
-            .GetTransientHandlers<LifecycleEventContext<ApplicationStartedEvent>, Task<Unit>>(typeCollection,
-                ServiceHandlerFactory.Instance));
+        _applicationStarted = EventHandlerFactory
+            .CreateParallelEventHandler<ApplicationStartedEvent>(typeCollection, ServiceHandlerFactory.Instance);
 
-        _applicationStopping = Handler.SequentialAsync(HandlerAutoRegistrationService
-            .GetTransientHandlers<LifecycleEventContext<ApplicationStoppingEvent>, Task<Unit>>(typeCollection,
-                ServiceHandlerFactory.Instance));
+        _applicationStopping = EventHandlerFactory
+            .CreateSequentialEventHandler<ApplicationStoppingEvent>(typeCollection, ServiceHandlerFactory.Instance);
 
-        _applicationStopped = Handler.ParallelAsync(HandlerAutoRegistrationService
-            .GetTransientHandlers<LifecycleEventContext<ApplicationStoppedEvent>, Task<Unit>>(typeCollection,
-                ServiceHandlerFactory.Instance));
+        _applicationStopped = EventHandlerFactory
+            .CreateParallelEventHandler<ApplicationStoppedEvent>(typeCollection, ServiceHandlerFactory.Instance);
     }
 
     public ApplicationLifecycle(
-        IHandler<LifecycleEventContext<ApplicationStartingEvent>, Task<Unit>> applicationStarting,
-        IHandler<LifecycleEventContext<ApplicationStartedEvent>, Task<Unit>> applicationStarted,
-        IHandler<LifecycleEventContext<ApplicationStoppingEvent>, Task<Unit>> applicationStopping,
-        IHandler<LifecycleEventContext<ApplicationStoppedEvent>, Task<Unit>> applicationStopped)
+        IHandler<IEventContext<ApplicationStartingEvent>, Task<Unit>> applicationStarting,
+        IHandler<IEventContext<ApplicationStartedEvent>, Task<Unit>> applicationStarted,
+        IHandler<IEventContext<ApplicationStoppingEvent>, Task<Unit>> applicationStopping,
+        IHandler<IEventContext<ApplicationStoppedEvent>, Task<Unit>> applicationStopped)
     {
         _applicationStarting = applicationStarting;
         _applicationStarted = applicationStarted;
@@ -53,7 +51,7 @@ public class ApplicationLifecycle : IApplicationLifecycle
         _applicationStopped = applicationStopped;
     }
 
-    public IHandler<LifecycleEventContext<ApplicationStartingEvent>, Task<Unit>> ApplicationStarting
+    public IHandler<IEventContext<ApplicationStartingEvent>, Task<Unit>> ApplicationStarting
     {
         get => _applicationStarting;
         set
@@ -63,7 +61,7 @@ public class ApplicationLifecycle : IApplicationLifecycle
         }
     }
 
-    public IHandler<LifecycleEventContext<ApplicationStartedEvent>, Task<Unit>> ApplicationStarted
+    public IHandler<IEventContext<ApplicationStartedEvent>, Task<Unit>> ApplicationStarted
     {
         get => _applicationStarted;
         set
@@ -73,7 +71,7 @@ public class ApplicationLifecycle : IApplicationLifecycle
         }
     }
 
-    public IHandler<LifecycleEventContext<ApplicationStoppingEvent>, Task<Unit>> ApplicationStopping
+    public IHandler<IEventContext<ApplicationStoppingEvent>, Task<Unit>> ApplicationStopping
     {
         get => _applicationStopping;
         set
@@ -83,7 +81,7 @@ public class ApplicationLifecycle : IApplicationLifecycle
         }
     }
 
-    public IHandler<LifecycleEventContext<ApplicationStoppedEvent>, Task<Unit>> ApplicationStopped
+    public IHandler<IEventContext<ApplicationStoppedEvent>, Task<Unit>> ApplicationStopped
     {
         get => _applicationStopped;
         set
