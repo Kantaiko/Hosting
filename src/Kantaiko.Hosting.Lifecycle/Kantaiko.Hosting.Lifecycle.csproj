@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kantaiko.Routing" Version="0.5.1" />
+    <PackageReference Include="Kantaiko.Routing" Version="0.5.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
   </ItemGroup>
 
