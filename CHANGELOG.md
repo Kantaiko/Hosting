@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/saintedlama/versionize) for commit guidelines.
 
+<a name="0.4.1"></a>
+## [0.4.1](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.4.1) (2021-12-27)
+
+### Bug Fixes
+
+* Update Kantaiko.Routing ([b5a9aca](https://www.github.com/Kantaiko/Hosting/commit/b5a9acae384808a204a80c216407f5a4faa4997a))
+
 <a name="0.4.0"></a>
 ## [0.4.0](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.4.0) (2021-12-17)
 
