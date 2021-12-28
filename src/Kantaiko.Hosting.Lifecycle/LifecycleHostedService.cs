@@ -22,22 +22,20 @@ internal class LifecycleHostedService : IHostedService
     {
         _applicationLifetime.ApplicationStarted.Register(() =>
         {
-            var context = new EventContext<ApplicationStartedEvent>(new ApplicationStartedEvent(),
-                _serviceProvider, CancellationToken.None);
+            var context = new EventContext<ApplicationStartedEvent>(new ApplicationStartedEvent(), _serviceProvider);
 
             _applicationLifecycle.ApplicationStarted.Handle(context);
         });
 
         _applicationLifetime.ApplicationStopped.Register(() =>
         {
-            var context = new EventContext<ApplicationStoppedEvent>(new ApplicationStoppedEvent(),
-                _serviceProvider, CancellationToken.None);
+            var context = new EventContext<ApplicationStoppedEvent>(new ApplicationStoppedEvent(), _serviceProvider);
 
             _applicationLifecycle.ApplicationStopped.Handle(context);
         });
 
         var context = new EventContext<ApplicationStartingEvent>(new ApplicationStartingEvent(),
-            _serviceProvider, cancellationToken);
+            _serviceProvider, cancellationToken: cancellationToken);
 
         return _applicationLifecycle.ApplicationStarting.Handle(context);
     }
@@ -45,7 +43,7 @@ internal class LifecycleHostedService : IHostedService
     public Task StopAsync(CancellationToken cancellationToken)
     {
         var context = new EventContext<ApplicationStoppingEvent>(new ApplicationStoppingEvent(),
-            _serviceProvider, cancellationToken);
+            _serviceProvider, cancellationToken: cancellationToken);
 
         return _applicationLifecycle.ApplicationStopping.Handle(context);
     }
