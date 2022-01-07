@@ -1,5 +1,6 @@
 using Kantaiko.Hosting.Lifecycle.Events;
 using Kantaiko.Routing.Events;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Kantaiko.Hosting.Lifecycle;
@@ -18,33 +19,45 @@ internal class LifecycleHostedService : IHostedService
         _serviceProvider = serviceProvider;
     }
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
-        _applicationLifetime.ApplicationStarted.Register(() =>
+        // ReSharper disable once AsyncVoidLambda
+        _applicationLifetime.ApplicationStarted.Register(async () =>
         {
-            var context = new EventContext<ApplicationStartedEvent>(new ApplicationStartedEvent(), _serviceProvider);
+            using var scope = _serviceProvider.CreateScope();
 
-            _applicationLifecycle.ApplicationStarted.Handle(context);
+            var context = new EventContext<ApplicationStartedEvent>(
+                new ApplicationStartedEvent(), scope.ServiceProvider);
+
+            await _applicationLifecycle.ApplicationStarted.Handle(context);
         });
 
-        _applicationLifetime.ApplicationStopped.Register(() =>
+        // ReSharper disable once AsyncVoidLambda
+        _applicationLifetime.ApplicationStopped.Register(async () =>
         {
-            var context = new EventContext<ApplicationStoppedEvent>(new ApplicationStoppedEvent(), _serviceProvider);
+            using var scope = _serviceProvider.CreateScope();
 
-            _applicationLifecycle.ApplicationStopped.Handle(context);
+            var context = new EventContext<ApplicationStoppedEvent>(
+                new ApplicationStoppedEvent(), scope.ServiceProvider);
+
+            await _applicationLifecycle.ApplicationStopped.Handle(context);
         });
+
+        using var scope = _serviceProvider.CreateScope();
 
         var context = new EventContext<ApplicationStartingEvent>(new ApplicationStartingEvent(),
-            _serviceProvider, cancellationToken: cancellationToken);
+            scope.ServiceProvider, cancellationToken: cancellationToken);
 
-        return _applicationLifecycle.ApplicationStarting.Handle(context);
+        await _applicationLifecycle.ApplicationStarting.Handle(context);
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
+    public async Task StopAsync(CancellationToken cancellationToken)
     {
-        var context = new EventContext<ApplicationStoppingEvent>(new ApplicationStoppingEvent(),
-            _serviceProvider, cancellationToken: cancellationToken);
+        using var scope = _serviceProvider.CreateScope();
 
-        return _applicationLifecycle.ApplicationStopping.Handle(context);
+        var context = new EventContext<ApplicationStoppingEvent>(new ApplicationStoppingEvent(),
+            scope.ServiceProvider, cancellationToken: cancellationToken);
+
+        await _applicationLifecycle.ApplicationStopping.Handle(context);
     }
 }

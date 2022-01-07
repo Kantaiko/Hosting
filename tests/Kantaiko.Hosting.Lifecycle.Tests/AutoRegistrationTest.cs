@@ -1,6 +1,7 @@
 using System.Reflection;
 using Kantaiko.Hosting.Lifecycle.Events;
 using Kantaiko.Routing;
+using Kantaiko.Routing.Context;
 using Kantaiko.Routing.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,7 +19,7 @@ public class AutoRegistrationTest
         builder.ConfigureServices(services =>
         {
             services.AddSingleton<TestState>();
-            services.AddLifecycleEvents(Assembly.GetExecutingAssembly());
+            services.AddLifecycleEvents(typeof(AutoRegistrationTest).GetNestedTypes(BindingFlags.NonPublic));
         });
 
         var host = builder.Build();
@@ -38,15 +39,18 @@ public class AutoRegistrationTest
     private class ApplicationStartingHandler : LifecycleEventHandler<ApplicationStartingEvent>
     {
         private readonly TestState _testState;
+        private readonly IContextAccessor _contextAccessor;
 
-        public ApplicationStartingHandler(TestState testState)
+        public ApplicationStartingHandler(TestState testState, IContextAccessor contextAccessor)
         {
             _testState = testState;
+            _contextAccessor = contextAccessor;
         }
 
         protected override Task<Unit> HandleAsync(IEventContext<ApplicationStartingEvent> context)
         {
             Assert.Equal(0, _testState.Count++);
+            Assert.Same(context, _contextAccessor.Context);
             return Unit.Task;
         }
     }
