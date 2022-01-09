@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/saintedlama/versionize) for commit guidelines.
 
+<a name="0.5.0"></a>
+## [0.5.0](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.5.0) (2022-1-9)
+
+### Features
+
+* Improve managed hosting ([d849689](https://www.github.com/Kantaiko/Hosting/commit/d8496890a378b93e0c7b11f127e20c0fbb8a1579))
+
 <a name="0.4.4"></a>
 ## [0.4.4](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.4.4) (2022-1-7)
 
