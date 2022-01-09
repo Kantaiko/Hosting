@@ -1,11 +1,11 @@
-﻿namespace Kantaiko.Hosting.Managed.Runtime;
+﻿using Kantaiko.Properties;
 
-public interface IRuntimeHostState
+namespace Kantaiko.Hosting.Managed.Runtime;
+
+public interface IRuntimeHostState : IPropertyContainer
 {
     bool RestartRequested { get; }
     DateTime RestartRequestedAt { get; }
-    Dictionary<string, object> Properties { get; }
-
     bool HostRestarted { get; }
     bool RestartFailed { get; }
     DateTime RestartCompletedAt { get; }

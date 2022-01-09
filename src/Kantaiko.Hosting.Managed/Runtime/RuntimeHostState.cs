@@ -1,10 +1,12 @@
-﻿namespace Kantaiko.Hosting.Managed.Runtime;
+﻿using Kantaiko.Properties;
+
+namespace Kantaiko.Hosting.Managed.Runtime;
 
 internal class RuntimeHostState : IRuntimeHostState
 {
     public bool RestartRequested { get; set; }
     public DateTime RestartRequestedAt { get; set; }
-    public Dictionary<string, object> Properties { get; set; } = new();
+    public IPropertyCollection Properties { get; set; } = new PropertyCollection();
 
     public bool HostRestarted { get; set; }
     public bool RestartFailed { get; set; }

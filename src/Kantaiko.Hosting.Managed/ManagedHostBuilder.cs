@@ -5,12 +5,20 @@ namespace Kantaiko.Hosting.Managed;
 public class ManagedHostBuilder : IManagedHostBuilder
 {
     private IHostBuilderFactory? _hostBuilderFactory;
+    private IManagedHostHandler? _managedHostHandler;
 
     private readonly List<Action<IHostBuilder>> _configureDelegates = new();
 
     public IManagedHostBuilder UseHostBuilderFactory(IHostBuilderFactory hostBuilderFactory)
     {
         _hostBuilderFactory = hostBuilderFactory;
+
+        return this;
+    }
+
+    public IManagedHostBuilder UseManagedHostHandler(IManagedHostHandler managedHostHandler)
+    {
+        _managedHostHandler = managedHostHandler;
 
         return this;
     }
@@ -36,6 +44,6 @@ public class ManagedHostBuilder : IManagedHostBuilder
             ? null
             : new SingleHostBuilderFactoryProvider(hostBuilderFactory);
 
-        return new ManagedHost(hostBuilderFactoryProvider);
+        return new ManagedHost(hostBuilderFactoryProvider, _managedHostHandler);
     }
 }

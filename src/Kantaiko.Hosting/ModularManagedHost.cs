@@ -1,3 +1,4 @@
+using Kantaiko.Hosting.Lifecycle;
 using Kantaiko.Hosting.Managed;
 using Kantaiko.Hosting.Modularity;
 using Microsoft.Extensions.Hosting;
@@ -14,9 +15,11 @@ public static class ModularManagedHost
             hostBuilder.AddModule<TModule>();
             hostBuilder.CompleteModularityConfiguration();
             hostBuilder.ConfigureServices(ServiceCollectionExtensions.AddModularLifecycleEvents);
+            hostBuilder.ConfigureServices(ServiceCollectionExtensions.AddManagedHostLifecycle);
         }
 
         return ManagedHost.CreateDefaultBuilder(args)
+            .UseManagedHostHandler(new LifecycleManagedHostHandler())
             .ConfigureHostBuilder(ConfigureHost)
             .Build().RunAsync(cancellationToken);
     }

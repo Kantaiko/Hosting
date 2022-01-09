@@ -1,4 +1,3 @@
-using System.Reflection;
 using Kantaiko.Hosting.Lifecycle.Events;
 using Kantaiko.Routing;
 using Kantaiko.Routing.AutoRegistration;
@@ -23,7 +22,7 @@ public class ApplicationLifecycle : IApplicationLifecycle
 
     public ApplicationLifecycle(IEnumerable<Type> types)
     {
-        types = types.Concat(Assembly.GetExecutingAssembly().GetTypes());
+        types = types.Concat(typeof(ApplicationLifecycle).Assembly.GetTypes());
         var typeCollection = AutoRegistrationUtils.MaterializeCollection(types);
 
         _applicationStarting = EventHandlerFactory

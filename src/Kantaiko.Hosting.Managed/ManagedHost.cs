@@ -9,6 +9,7 @@ namespace Kantaiko.Hosting.Managed;
 /// <inheritdoc />
 public class ManagedHost : IManagedHost
 {
+    private readonly IManagedHostHandler? _managedHostHandler;
     private readonly IHostBuilderFactoryProvider _hostBuilderFactoryProvider;
 
     private TaskCompletionSource? _shutdownTaskCompletionSource;
@@ -39,10 +40,13 @@ public class ManagedHost : IManagedHost
         }
     }
 
-    public ManagedHost(IHostBuilderFactoryProvider? hostBuilderFactoryProvider = null)
+    public ManagedHost(IHostBuilderFactoryProvider? hostBuilderFactoryProvider = null,
+        IManagedHostHandler? managedHostHandler = null)
     {
         hostBuilderFactoryProvider ??= new SingleHostBuilderFactoryProvider(new DefaultHostBuilderFactory());
         _hostBuilderFactoryProvider = hostBuilderFactoryProvider;
+
+        _managedHostHandler = managedHostHandler;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken = default)
@@ -67,24 +71,34 @@ public class ManagedHost : IManagedHost
 
             // Start current host
             await _currentHost.StartAsync(cancellationToken);
+
+            // Register shutdown handler to perform host restart
+            RegisterShutdownHandler();
+
+            if (State is not ManagedHostState.Starting)
+            {
+                throw new InvalidOperationException("Invalid internal host state");
+            }
+
+            if (_managedHostHandler is not null)
+            {
+                await _managedHostHandler.HandleInitialHostStart(_currentHost.Services, cancellationToken);
+            }
+
+            State = ManagedHostState.Started;
         }
         catch (Exception exception)
         {
             State = ManagedHostState.NotStarted;
 
-            _shutdownTaskCompletionSource.SetException(exception);
+            _shutdownTaskCompletionSource?.SetException(exception);
             _shutdownTaskCompletionSource = null;
 
-            _restartTaskCompletionSource.SetException(exception);
+            _restartTaskCompletionSource?.SetException(exception);
             _restartTaskCompletionSource = null;
 
             throw;
         }
-
-        // Register shutdown handler to perform host restart
-        RegisterShutdownHandler();
-
-        State = ManagedHostState.Started;
     }
 
     public Task StopAsync(CancellationToken cancellationToken = default)
@@ -183,16 +197,19 @@ public class ManagedHost : IManagedHost
 
             Debug.Assert(_shutdownTaskCompletionSource is not null);
 
-            // Change host state
-            State = ManagedHostState.NotStarted;
+            lock (_stateLock)
+            {
+                // Change host state
+                State = ManagedHostState.NotStarted;
 
-            // Notify shutdown listeners
-            _shutdownTaskCompletionSource.SetResult();
-            _shutdownTaskCompletionSource = null;
+                // Notify shutdown listeners
+                _shutdownTaskCompletionSource.SetResult();
+                _shutdownTaskCompletionSource = null;
 
-            // Cancel restart listeners
-            _restartTaskCompletionSource.SetCanceled(CancellationToken.None);
-            _restartTaskCompletionSource = null;
+                // Cancel restart listeners
+                _restartTaskCompletionSource.SetCanceled(CancellationToken.None);
+                _restartTaskCompletionSource = null;
+            }
 
             return;
         }
@@ -212,15 +229,18 @@ public class ManagedHost : IManagedHost
 
         Debug.Assert(_currentHost is not null);
 
-        // Ensure shutdown handler registered
-        RegisterShutdownHandler();
+        lock (_stateLock)
+        {
+            // Ensure shutdown handler registered
+            RegisterShutdownHandler();
 
-        State = ManagedHostState.Started;
+            State = ManagedHostState.Started;
 
-        var hostState = _currentHost.Services.GetRequiredService<RuntimeHostState>();
+            var hostState = _currentHost.Services.GetRequiredService<RuntimeHostState>();
 
-        _restartTaskCompletionSource.SetResult(hostState);
-        _restartTaskCompletionSource = new TaskCompletionSource<IRuntimeHostState>();
+            _restartTaskCompletionSource.SetResult(hostState);
+            _restartTaskCompletionSource = new TaskCompletionSource<IRuntimeHostState>();
+        }
     }
 
     private async Task PerformRestart(IRuntimeHostState oldHostState, CancellationToken cancellationToken)
@@ -252,6 +272,11 @@ public class ManagedHost : IManagedHost
 
         // Replace old host builder factory with new one
         _currentHostBuilderFactory = hostBuilderFactory;
+
+        if (_managedHostHandler is not null)
+        {
+            await _managedHostHandler.HandleHostTransition(_currentHost.Services, newHostState, cancellationToken);
+        }
     }
 
     private async Task RecoverRestartFailure(IRuntimeHostState oldHostState, Exception exception,
@@ -277,6 +302,11 @@ public class ManagedHost : IManagedHost
         newHostState.RestartFailed = true;
         newHostState.StartupException = exception;
         newHostState.Properties = oldHostState.Properties;
+
+        if (_managedHostHandler is not null)
+        {
+            await _managedHostHandler.HandleHostTransition(_currentHost.Services, newHostState, cancellationToken);
+        }
     }
 
     private async void RegisterShutdownHandler()
@@ -301,16 +331,18 @@ public class ManagedHost : IManagedHost
             Debug.Assert(_restartTaskCompletionSource is not null);
 
             // Report restart/shutdown failure to all listeners
-
-            State = ManagedHostState.NotStarted;
-
             var unrecoverableException = new UnrecoverableHostStateException(exception);
 
-            _shutdownTaskCompletionSource.SetException(unrecoverableException);
-            _shutdownTaskCompletionSource = null;
+            lock (_stateLock)
+            {
+                State = ManagedHostState.NotStarted;
 
-            _restartTaskCompletionSource.SetException(unrecoverableException);
-            _restartTaskCompletionSource = null;
+                _shutdownTaskCompletionSource.SetException(unrecoverableException);
+                _shutdownTaskCompletionSource = null;
+
+                _restartTaskCompletionSource.SetException(unrecoverableException);
+                _restartTaskCompletionSource = null;
+            }
         }
     }
 

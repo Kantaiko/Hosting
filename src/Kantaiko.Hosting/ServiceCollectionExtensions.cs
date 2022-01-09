@@ -22,4 +22,17 @@ public static class ServiceCollectionExtensions
             return new ApplicationLifecycle(types);
         }));
     }
+
+    public static void AddManagedHostLifecycle(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.AddSingleton<IManagedHostLifecycle>(sp =>
+        {
+            var hostInfo = sp.GetRequiredService<HostInfo>();
+            var types = hostInfo.Assemblies.SelectMany(x => x.GetTypes()).ToImmutableArray();
+
+            return new ManagedHostLifecycle(types);
+        });
+    }
 }
