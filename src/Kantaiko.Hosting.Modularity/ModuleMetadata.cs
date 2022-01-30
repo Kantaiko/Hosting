@@ -16,7 +16,7 @@ public class ModuleMetadata
         Version = version;
         Description = description;
         Flags = flags;
-        Properties = properties ?? new ImmutablePropertyCollection();
+        Properties = properties ?? ImmutablePropertyCollection.Empty;
     }
 
     public string DisplayName { get; init; }

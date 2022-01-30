@@ -45,7 +45,7 @@ public class FailureRecoveryTest
 
     private class TestHostBuilderFactoryProvider : IHostBuilderFactoryProvider
     {
-        public bool Volatile { get; set; } = true;
+        public bool Volatile => true;
 
         public bool TriggerFailureForNewBuilders { get; set; }
         public bool TriggerFailureForAllBuilders { get; set; }

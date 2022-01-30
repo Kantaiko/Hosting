@@ -1,4 +1,5 @@
 using Kantaiko.Hosting.Lifecycle.Events;
+using Kantaiko.Hosting.Managed;
 using Kantaiko.Hosting.Managed.Runtime;
 using Kantaiko.Hosting.Modularity;
 using Kantaiko.Routing;
@@ -12,7 +13,13 @@ public class ModularManagedHostTest
     [Fact]
     public async Task ShouldStartRestartAndStopHost()
     {
-        await ModularManagedHost.RunAsync<TestModule>();
+        var builder = ModularManagedHost.CreateDefaultBuilder();
+
+        builder.ConfigureHostBuilder(b => b.AddModule<TestModule>());
+
+        var host = builder.Build();
+
+        await host.RunAsync();
     }
 
     private class TestModule : Module { }
