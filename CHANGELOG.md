@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/saintedlama/versionize) for commit guidelines.
 
+<a name="0.6.0"></a>
+## [0.6.0](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.6.0) (2022-1-30)
+
+### Features
+
+* Replace Run methods with builder factories to improve extensibility ([40c46ae](https://www.github.com/Kantaiko/Hosting/commit/40c46ae92f95941c61c60ea70e4cee4518f9f25e))
+
 <a name="0.5.0"></a>
 ## [0.5.0](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.5.0) (2022-1-9)
 
