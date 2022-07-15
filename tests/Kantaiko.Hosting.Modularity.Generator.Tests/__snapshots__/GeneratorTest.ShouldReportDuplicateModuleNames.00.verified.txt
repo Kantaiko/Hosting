@@ -1,0 +1,30 @@
+﻿{
+  Diagnostics: [
+    {
+      Id: Kantaiko:Modularity:ModuleNameConflict,
+      Title: Module name conflict,
+      Severity: Error,
+      WarningLevel: 0,
+      Location: : (7,29)-(7,39),
+      Description: ,
+      HelpLink: ,
+      MessageFormat: Project cannot contain multiple modules with the same name,
+      Message: Project cannot contain multiple modules with the same name,
+      Category: Modularity,
+      CustomTags: []
+    },
+    {
+      Id: Kantaiko:Modularity:ModuleNameConflict,
+      Title: Module name conflict,
+      Severity: Error,
+      WarningLevel: 0,
+      Location: : (12,29)-(12,39),
+      Description: ,
+      HelpLink: ,
+      MessageFormat: Project cannot contain multiple modules with the same name,
+      Message: Project cannot contain multiple modules with the same name,
+      Category: Modularity,
+      CustomTags: []
+    }
+  ]
+}

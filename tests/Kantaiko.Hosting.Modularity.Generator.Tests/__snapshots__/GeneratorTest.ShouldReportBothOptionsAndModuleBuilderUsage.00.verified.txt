@@ -1,0 +1,17 @@
+﻿{
+  Diagnostics: [
+    {
+      Id: Kantaiko:Modularity:ModuleAllowOnlyOptionsOrBuilder,
+      Title: Module allow only options or builder,
+      Severity: Error,
+      WarningLevel: 0,
+      Location: : (16,25)-(16,35),
+      Description: ,
+      HelpLink: ,
+      MessageFormat: For one module you can specify either options or builder,
+      Message: For one module you can specify either options or builder,
+      Category: Modularity,
+      CustomTags: []
+    }
+  ]
+}
