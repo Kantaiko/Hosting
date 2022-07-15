@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/saintedlama/versionize) for commit guidelines.
 
+<a name="0.7.0"></a>
+## [0.7.0](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.7.0) (2022-7-15)
+
+### Features
+
+* Add modularity generator ([d491670](https://www.github.com/Kantaiko/Hosting/commit/d491670fe5ca544829edce10cb07873d65e7b2f4))
+* Simplify modularity ([734cf6c](https://www.github.com/Kantaiko/Hosting/commit/734cf6c1dcd18c33e041c4779344aca8366cf956))
+
 <a name="0.6.0"></a>
 ## [0.6.0](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.6.0) (2022-1-30)
 
