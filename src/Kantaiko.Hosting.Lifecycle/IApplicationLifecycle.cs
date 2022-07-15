@@ -1,14 +1,13 @@
 using Kantaiko.Hosting.Lifecycle.Events;
-using Kantaiko.Routing;
 using Kantaiko.Routing.Events;
 
 namespace Kantaiko.Hosting.Lifecycle;
 
 public interface IApplicationLifecycle
 {
-    IHandler<IEventContext<ApplicationStartingEvent>, Task<Unit>> ApplicationStarting { get; set; }
-    IHandler<IEventContext<ApplicationStartedEvent>, Task<Unit>> ApplicationStarted { get; set; }
+    event AsyncEventHandler<IEventContext<ApplicationStartingEvent>> ApplicationStarting;
+    event AsyncEventHandler<IEventContext<ApplicationStartedEvent>> ApplicationStarted;
 
-    IHandler<IEventContext<ApplicationStoppingEvent>, Task<Unit>> ApplicationStopping { get; set; }
-    IHandler<IEventContext<ApplicationStoppedEvent>, Task<Unit>> ApplicationStopped { get; set; }
+    event AsyncEventHandler<IEventContext<ApplicationStoppingEvent>> ApplicationStopping;
+    event AsyncEventHandler<IEventContext<ApplicationStoppedEvent>> ApplicationStopped;
 }

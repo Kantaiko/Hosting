@@ -37,13 +37,12 @@ public class IntrospectionTest
         var hostBuilder = new HostBuilder();
 
         hostBuilder.AddModule<ModuleB>();
-        hostBuilder.CompleteModularityConfiguration();
 
         var host = hostBuilder.Build();
         var hostInfo = host.Services.GetRequiredService<HostInfo>();
 
-        await Verifier.Verify(hostInfo)
-            .ModifySerialization(x => x.IgnoreMembers("Version", "Assemblies"))
+        await Verify(hostInfo)
+            .IgnoreMembers("Version", "Assemblies")
             .UseDirectory("__snapshots__");
     }
 }

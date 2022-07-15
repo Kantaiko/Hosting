@@ -17,11 +17,4 @@ public static class HostBuilderExtensions
 
         return hostBuilder.ConfigureServices(services => services.AddModule(moduleType));
     }
-
-    public static IHostBuilder CompleteModularityConfiguration(this IHostBuilder hostBuilder)
-    {
-        ArgumentNullException.ThrowIfNull(hostBuilder);
-
-        return hostBuilder.ConfigureServices(services => services.CompleteModularityConfiguration());
-    }
 }

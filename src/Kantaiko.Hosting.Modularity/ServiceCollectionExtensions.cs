@@ -1,5 +1,3 @@
-using Kantaiko.Hosting.Modularity.Internal;
-using Kantaiko.Hosting.Modularity.Introspection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,6 +18,13 @@ public static class ServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         return ServiceCollectionHelper.GetHostBuilderContext(services).HostingEnvironment;
+    }
+
+    public static void AddModularity(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        ServiceCollectionHelper.TryAddHostInfo(services);
     }
 
     public static void AddModule<TModule>(this IServiceCollection services) where TModule : IModule
@@ -68,31 +73,5 @@ public static class ServiceCollectionExtensions
         {
             services.Configure(configureOptions);
         }
-    }
-
-    public static void CompleteModularityConfiguration(this IServiceCollection services)
-    {
-        ArgumentNullException.ThrowIfNull(services);
-
-        if (services.Any(x => x.ServiceType == typeof(HostInfo) && x.ImplementationInstance is not null))
-        {
-            return;
-        }
-
-        var moduleManagerDescriptor = services.FirstOrDefault(x => x.ServiceType == typeof(ModuleManager));
-
-        if (moduleManagerDescriptor is null)
-        {
-            services.AddSingleton(new HostInfo());
-            return;
-        }
-
-        var moduleManager = (ModuleManager) moduleManagerDescriptor.ImplementationInstance!;
-
-        var hostInfoFactory = new HostInfoFactory(moduleManager);
-        var hostInfo = hostInfoFactory.CreateHostInfo();
-
-        services.AddSingleton(hostInfo);
-        services.Remove(moduleManagerDescriptor);
     }
 }

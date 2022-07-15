@@ -1,19 +1,23 @@
+using Kantaiko.Hosting.Lifecycle;
 using Kantaiko.Hosting.Lifecycle.Events;
 using Kantaiko.Hosting.Managed;
 using Kantaiko.Hosting.Managed.Runtime;
 using Kantaiko.Hosting.Modularity;
 using Kantaiko.Routing;
 using Kantaiko.Routing.Events;
+using Microsoft.Extensions.Hosting;
 using Xunit;
 
 namespace Kantaiko.Hosting.Tests;
 
-public class ModularManagedHostTest
+public class ManagedHostLifecycleTest
 {
     [Fact]
     public async Task ShouldStartRestartAndStopHost()
     {
-        var builder = ModularManagedHost.CreateDefaultBuilder();
+        var builder = ManagedHost.CreateDefaultBuilder();
+
+        builder.UseManagedHostLifecycle();
 
         builder.ConfigureHostBuilder(b => b.AddModule<TestModule>());
 
@@ -24,7 +28,7 @@ public class ModularManagedHostTest
 
     private class TestModule : Module { }
 
-    private class HostInitiallyStartedHandler : Routing.Events.EventHandler<HostInitiallyStartedEvent>
+    private class HostInitiallyStartedHandler : EventHandlerBase<HostInitiallyStartedEvent>
     {
         private readonly IRuntimeHostManager _runtimeHostManager;
 
@@ -41,7 +45,7 @@ public class ModularManagedHostTest
         }
     }
 
-    private class HostTransitionCompletedHandler : Routing.Events.EventHandler<HostTransitionCompletedEvent>
+    private class HostTransitionCompletedHandler : EventHandlerBase<HostTransitionCompletedEvent>
     {
         private readonly IRuntimeHostManager _runtimeHostManager;
 

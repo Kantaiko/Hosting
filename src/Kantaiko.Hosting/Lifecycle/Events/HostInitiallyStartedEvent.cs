@@ -1,3 +1,3 @@
 ﻿namespace Kantaiko.Hosting.Lifecycle.Events;
 
-public class HostInitiallyStartedEvent : IHostLifecycleEvent { }
+public class HostInitiallyStartedEvent : IManagedHostLifecycleEvent { }

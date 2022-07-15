@@ -1,92 +1,87 @@
 using Kantaiko.Hosting.Lifecycle.Events;
-using Kantaiko.Routing;
-using Kantaiko.Routing.AutoRegistration;
 using Kantaiko.Routing.Events;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Kantaiko.Hosting.Lifecycle;
 
-public class ApplicationLifecycle : IApplicationLifecycle
+public class ApplicationLifecycle : IApplicationLifecycle, IHostedService
 {
-    private IHandler<IEventContext<ApplicationStartingEvent>, Task<Unit>> _applicationStarting;
-    private IHandler<IEventContext<ApplicationStartedEvent>, Task<Unit>> _applicationStarted;
-    private IHandler<IEventContext<ApplicationStoppingEvent>, Task<Unit>> _applicationStopping;
-    private IHandler<IEventContext<ApplicationStoppedEvent>, Task<Unit>> _applicationStopped;
+    private readonly IHostApplicationLifetime _hostApplicationLifetime;
+    private readonly IServiceProvider _serviceProvider;
 
-    public ApplicationLifecycle()
+    public ApplicationLifecycle(IHostApplicationLifetime hostApplicationLifetime, IServiceProvider serviceProvider)
     {
-        _applicationStarting = Handler.EmptyAsync<IEventContext<ApplicationStartingEvent>>();
-        _applicationStarted = Handler.EmptyAsync<IEventContext<ApplicationStartedEvent>>();
-        _applicationStopping = Handler.EmptyAsync<IEventContext<ApplicationStoppingEvent>>();
-        _applicationStopped = Handler.EmptyAsync<IEventContext<ApplicationStoppedEvent>>();
+        _hostApplicationLifetime = hostApplicationLifetime;
+        _serviceProvider = serviceProvider;
     }
 
-    public ApplicationLifecycle(IEnumerable<Type> types)
+    public event AsyncEventHandler<IEventContext<ApplicationStartingEvent>>? ApplicationStarting;
+    public event AsyncEventHandler<IEventContext<ApplicationStartedEvent>>? ApplicationStarted;
+    public event AsyncEventHandler<IEventContext<ApplicationStoppingEvent>>? ApplicationStopping;
+    public event AsyncEventHandler<IEventContext<ApplicationStoppedEvent>>? ApplicationStopped;
+
+    public Task StartAsync(CancellationToken cancellationToken)
     {
-        types = types.Concat(typeof(ApplicationLifecycle).Assembly.GetTypes());
-        var typeCollection = AutoRegistrationUtils.MaterializeCollection(types);
+        _hostApplicationLifetime.ApplicationStarted.Register(OnApplicationStarted);
 
-        _applicationStarting = EventHandlerFactory
-            .CreateSequentialEventHandler<ApplicationStartingEvent>(typeCollection, ServiceHandlerFactory.Instance);
-
-        _applicationStarted = EventHandlerFactory
-            .CreateParallelEventHandler<ApplicationStartedEvent>(typeCollection, ServiceHandlerFactory.Instance);
-
-        _applicationStopping = EventHandlerFactory
-            .CreateSequentialEventHandler<ApplicationStoppingEvent>(typeCollection, ServiceHandlerFactory.Instance);
-
-        _applicationStopped = EventHandlerFactory
-            .CreateParallelEventHandler<ApplicationStoppedEvent>(typeCollection, ServiceHandlerFactory.Instance);
+        return OnApplicationStarting(cancellationToken);
     }
 
-    public ApplicationLifecycle(
-        IHandler<IEventContext<ApplicationStartingEvent>, Task<Unit>> applicationStarting,
-        IHandler<IEventContext<ApplicationStartedEvent>, Task<Unit>> applicationStarted,
-        IHandler<IEventContext<ApplicationStoppingEvent>, Task<Unit>> applicationStopping,
-        IHandler<IEventContext<ApplicationStoppedEvent>, Task<Unit>> applicationStopped)
+    public Task StopAsync(CancellationToken cancellationToken)
     {
-        _applicationStarting = applicationStarting;
-        _applicationStarted = applicationStarted;
-        _applicationStopping = applicationStopping;
-        _applicationStopped = applicationStopped;
+        _hostApplicationLifetime.ApplicationStopped.Register(OnApplicationStopped);
+
+        return OnApplicationStopping(cancellationToken);
     }
 
-    public IHandler<IEventContext<ApplicationStartingEvent>, Task<Unit>> ApplicationStarting
+    private async Task OnApplicationStarting(CancellationToken cancellationToken)
     {
-        get => _applicationStarting;
-        set
-        {
-            ArgumentNullException.ThrowIfNull(value);
-            _applicationStarting = value;
-        }
+        await using var scope = _serviceProvider.CreateAsyncScope();
+
+        var context = new EventContext<ApplicationStartingEvent>(
+            new ApplicationStartingEvent(),
+            scope.ServiceProvider,
+            cancellationToken
+        );
+
+        await ApplicationStarting.InvokeAsync(context);
     }
 
-    public IHandler<IEventContext<ApplicationStartedEvent>, Task<Unit>> ApplicationStarted
+    private async void OnApplicationStarted()
     {
-        get => _applicationStarted;
-        set
-        {
-            ArgumentNullException.ThrowIfNull(value);
-            _applicationStarted = value;
-        }
+        await using var scope = _serviceProvider.CreateAsyncScope();
+
+        var context = new EventContext<ApplicationStartedEvent>(
+            new ApplicationStartedEvent(),
+            scope.ServiceProvider
+        );
+
+        await ApplicationStarted.InvokeAsync(context);
     }
 
-    public IHandler<IEventContext<ApplicationStoppingEvent>, Task<Unit>> ApplicationStopping
+    private async Task OnApplicationStopping(CancellationToken cancellationToken)
     {
-        get => _applicationStopping;
-        set
-        {
-            ArgumentNullException.ThrowIfNull(value);
-            _applicationStopping = value;
-        }
+        await using var scope = _serviceProvider.CreateAsyncScope();
+
+        var context = new EventContext<ApplicationStoppingEvent>(
+            new ApplicationStoppingEvent(),
+            scope.ServiceProvider,
+            cancellationToken
+        );
+
+        await ApplicationStopping.InvokeAsync(context);
     }
 
-    public IHandler<IEventContext<ApplicationStoppedEvent>, Task<Unit>> ApplicationStopped
+    private async void OnApplicationStopped()
     {
-        get => _applicationStopped;
-        set
-        {
-            ArgumentNullException.ThrowIfNull(value);
-            _applicationStopped = value;
-        }
+        await using var scope = _serviceProvider.CreateAsyncScope();
+
+        var context = new EventContext<ApplicationStoppedEvent>(
+            new ApplicationStoppedEvent(),
+            scope.ServiceProvider
+        );
+
+        await ApplicationStopped.InvokeAsync(context);
     }
 }

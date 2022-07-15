@@ -19,7 +19,7 @@ public class ManagedHost : IManagedHost
 
     public ManagedHostState State { get; private set; } = ManagedHostState.NotStarted;
 
-    public bool IsStarted => State == ManagedHostState.Started;
+    public bool IsStarted => State is ManagedHostState.Started;
 
     private IHostBuilderFactory? _currentHostBuilderFactory;
     private IHost? _currentHost;

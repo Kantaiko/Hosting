@@ -1,6 +1,8 @@
+using System.Diagnostics;
 using Kantaiko.Hosting.Modularity.Internal;
 using Kantaiko.Hosting.Modularity.Introspection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace Kantaiko.Hosting.Modularity;
@@ -21,21 +23,46 @@ internal static class ServiceCollectionHelper
 
     public static ModuleManager GetModuleManager(IServiceCollection services)
     {
-        var moduleManagerDescriptor = services.FirstOrDefault(x => x.ServiceType == typeof(ModuleManager));
+        var moduleManagerAccessorDescriptor =
+            services.FirstOrDefault(x => x.ServiceType == typeof(ModuleManagerAccessor));
 
-        if (moduleManagerDescriptor is not null)
+        ModuleManagerAccessor moduleManagerAccessor;
+
+        if (moduleManagerAccessorDescriptor is not null)
         {
-            return (ModuleManager) moduleManagerDescriptor.ImplementationInstance!;
+            moduleManagerAccessor = (ModuleManagerAccessor) moduleManagerAccessorDescriptor.ImplementationInstance!;
+
+            Debug.Assert(moduleManagerAccessor.ModuleManager is not null);
+
+            return moduleManagerAccessor.ModuleManager;
         }
 
-        var moduleManager = new ModuleManager(services);
+        moduleManagerAccessor = new ModuleManagerAccessor(services);
 
-        services.AddSingleton(moduleManager);
+        services.AddSingleton(moduleManagerAccessor);
+        TryAddHostInfo(services);
 
-        services.AddSingleton<HostInfo>(_ => throw new InvalidOperationException(
-            "Host info has not been configured. " +
-            "Did you forget to call services.CompleteModularityConfiguration() before creating service provider?"));
+        return moduleManagerAccessor.ModuleManager!;
+    }
 
-        return moduleManager;
+    public static void TryAddHostInfo(IServiceCollection services)
+    {
+        services.TryAddSingleton(provider =>
+        {
+            var moduleManagerAccessor = provider.GetService<ModuleManagerAccessor>();
+
+            if (moduleManagerAccessor?.ModuleManager is not { } moduleManager)
+            {
+                return new HostInfo();
+            }
+
+            var hostInfoFactory = new HostInfoFactory(moduleManager);
+            var hostInfo = hostInfoFactory.CreateHostInfo();
+
+            // Release temporary module manager infrastructure
+            moduleManagerAccessor.ModuleManager = null;
+
+            return hostInfo;
+        });
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Kantaiko.Hosting.Lifecycle.Events;
 
-public class HostTransitionCompletedEvent : IHostLifecycleEvent
+public class HostTransitionCompletedEvent : IManagedHostLifecycleEvent
 {
     public HostTransitionCompletedEvent(IRuntimeHostState hostState)
     {

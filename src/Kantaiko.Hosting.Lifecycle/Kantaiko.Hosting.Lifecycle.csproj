@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kantaiko.Routing" Version="0.7.2" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+    <PackageReference Include="Kantaiko.Routing" Version="0.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kantaiko.Hosting.Modularity\Kantaiko.Hosting.Modularity.csproj" />
   </ItemGroup>
 
 </Project>

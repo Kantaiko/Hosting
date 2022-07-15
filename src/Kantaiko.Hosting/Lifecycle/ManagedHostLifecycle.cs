@@ -1,58 +1,46 @@
 ﻿using Kantaiko.Hosting.Lifecycle.Events;
-using Kantaiko.Routing;
-using Kantaiko.Routing.AutoRegistration;
+using Kantaiko.Hosting.Managed;
+using Kantaiko.Hosting.Managed.Runtime;
 using Kantaiko.Routing.Events;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Kantaiko.Hosting.Lifecycle;
 
-public class ManagedHostLifecycle : IManagedHostLifecycle
+internal class ManagedHostLifecycle : IManagedHostLifecycle, IManagedHostHandler
 {
-    private IHandler<IEventContext<HostInitiallyStartedEvent>, Task<Unit>> _hostInitiallyStarted;
-    private IHandler<IEventContext<HostTransitionCompletedEvent>, Task<Unit>> _hostTransitionCompleted;
+    public event AsyncEventHandler<IEventContext<HostInitiallyStartedEvent>>? HostInitiallyStarted;
+    public event AsyncEventHandler<IEventContext<HostTransitionCompletedEvent>>? HostTransitionCompleted;
 
-    public ManagedHostLifecycle()
+    public async Task HandleInitialHostStart(IServiceProvider serviceProvider, CancellationToken cancellationToken)
     {
-        _hostInitiallyStarted = Handler.EmptyAsync<IEventContext<HostInitiallyStartedEvent>>();
-        _hostTransitionCompleted = Handler.EmptyAsync<IEventContext<HostTransitionCompletedEvent>>();
+        await using var scope = serviceProvider.CreateAsyncScope();
+
+        var context = new EventContext<HostInitiallyStartedEvent>(
+            new HostInitiallyStartedEvent(),
+            scope.ServiceProvider,
+            cancellationToken
+        );
+
+        await HostInitiallyStarted.InvokeAsync(context);
     }
 
-    public ManagedHostLifecycle(IEnumerable<Type> types)
+    public async Task HandleHostTransition(IServiceProvider serviceProvider, IRuntimeHostState hostState,
+        CancellationToken cancellationToken)
     {
-        types = types.Concat(typeof(ManagedHostLifecycle).Assembly.GetTypes());
-        var typeCollection = AutoRegistrationUtils.MaterializeCollection(types);
+        await using var scope = serviceProvider.CreateAsyncScope();
 
-        _hostInitiallyStarted = EventHandlerFactory
-            .CreateSequentialEventHandler<HostInitiallyStartedEvent>(typeCollection, ServiceHandlerFactory.Instance);
+        var context = new EventContext<HostTransitionCompletedEvent>(
+            new HostTransitionCompletedEvent(hostState),
+            scope.ServiceProvider,
+            cancellationToken
+        );
 
-        _hostTransitionCompleted = EventHandlerFactory
-            .CreateSequentialEventHandler<HostTransitionCompletedEvent>(typeCollection, ServiceHandlerFactory.Instance);
+        await HostTransitionCompleted.InvokeAsync(context);
     }
 
-    public ManagedHostLifecycle(
-        IHandler<IEventContext<HostInitiallyStartedEvent>, Task<Unit>> hostInitiallyStarted,
-        IHandler<IEventContext<HostTransitionCompletedEvent>, Task<Unit>> hostTransitionCompleted)
+    public void ClearHandlers()
     {
-        _hostInitiallyStarted = hostInitiallyStarted;
-        _hostTransitionCompleted = hostTransitionCompleted;
-    }
-
-    public IHandler<IEventContext<HostInitiallyStartedEvent>, Task<Unit>> HostInitiallyStarted
-    {
-        get => _hostInitiallyStarted;
-        set
-        {
-            ArgumentNullException.ThrowIfNull(value);
-            _hostInitiallyStarted = value;
-        }
-    }
-
-    public IHandler<IEventContext<HostTransitionCompletedEvent>, Task<Unit>> HostTransitionCompleted
-    {
-        get => _hostTransitionCompleted;
-        set
-        {
-            ArgumentNullException.ThrowIfNull(value);
-            _hostTransitionCompleted = value;
-        }
+        HostInitiallyStarted = null;
+        HostTransitionCompleted = null;
     }
 }

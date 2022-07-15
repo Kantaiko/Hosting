@@ -11,4 +11,11 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference
+      Include="..\Kantaiko.Hosting.Modularity.Generator\Kantaiko.Hosting.Modularity.Generator.csproj"
+      PrivateAssets="contentfiles;build"
+      SetTargetFramework="TargetFramework=netstandard2.1" />
+  </ItemGroup>
+
 </Project>

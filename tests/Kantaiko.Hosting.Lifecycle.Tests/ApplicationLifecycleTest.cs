@@ -1,6 +1,6 @@
-using Kantaiko.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Kantaiko.Hosting.Modularity;
 using Xunit;
 
 namespace Kantaiko.Hosting.Lifecycle.Tests;
@@ -11,7 +11,13 @@ public class ApplicationLifecycleTest
     public async Task ShouldDispatchLifecycleEvents()
     {
         var builder = Host.CreateDefaultBuilder();
-        builder.ConfigureServices(services => services.AddLifecycleEvents());
+
+        builder.ConfigureServices(services =>
+        {
+            services.AddSingleton<TestState>();
+            services.AddModule<TestModule>();
+            services.AddApplicationLifecycle();
+        });
 
         var host = builder.Build();
 
@@ -19,33 +25,35 @@ public class ApplicationLifecycleTest
 
         var state = 0;
 
-        lifecycle.ApplicationStarting = lifecycle.ApplicationStarting.Wrap((context, next) =>
+        lifecycle.ApplicationStarting += _ =>
         {
             Assert.Equal(0, state++);
-            return next(context);
-        });
+            return Task.CompletedTask;
+        };
 
-        lifecycle.ApplicationStarted = lifecycle.ApplicationStarted.Wrap((context, next) =>
+        lifecycle.ApplicationStarted += _ =>
         {
             Assert.Equal(1, state++);
-            return next(context);
-        });
+            return Task.CompletedTask;
+        };
 
-        lifecycle.ApplicationStopping = lifecycle.ApplicationStopping.Wrap((context, next) =>
+        lifecycle.ApplicationStopping += _ =>
         {
             Assert.Equal(2, state++);
-            return next(context);
-        });
+            return Task.CompletedTask;
+        };
 
-        lifecycle.ApplicationStopped = lifecycle.ApplicationStopped.Wrap((context, next) =>
+        lifecycle.ApplicationStopped += _ =>
         {
             Assert.Equal(3, state++);
-            return next(context);
-        });
+            return Task.CompletedTask;
+        };
 
         await host.StartAsync();
         await host.StopAsync();
 
         Assert.Equal(4, state);
     }
+
+    private class TestModule : Module { }
 }

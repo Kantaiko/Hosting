@@ -1,7 +1,5 @@
-using System.Reflection;
 using Kantaiko.Hosting.Lifecycle.Events;
-using Kantaiko.Routing;
-using Kantaiko.Routing.Context;
+using Kantaiko.Hosting.Modularity;
 using Kantaiko.Routing.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,7 +17,8 @@ public class AutoRegistrationTest
         builder.ConfigureServices(services =>
         {
             services.AddSingleton<TestState>();
-            services.AddLifecycleEvents(typeof(AutoRegistrationTest).GetNestedTypes(BindingFlags.NonPublic));
+            services.AddModule<TestModule>();
+            services.AddApplicationLifecycle();
         });
 
         var host = builder.Build();
@@ -31,31 +30,27 @@ public class AutoRegistrationTest
         Assert.Equal(4, state.Count);
     }
 
-    private class TestState
-    {
-        public int Count { get; set; }
-    }
+    private class TestModule : Module { }
 
-    private class ApplicationStartingHandler : LifecycleEventHandler<ApplicationStartingEvent>
+
+    private class ApplicationStartingHandler : EventHandlerBase<ApplicationStartingEvent>
     {
         private readonly TestState _testState;
-        private readonly IContextAccessor _contextAccessor;
 
-        public ApplicationStartingHandler(TestState testState, IContextAccessor contextAccessor)
+        public ApplicationStartingHandler(TestState testState)
         {
             _testState = testState;
-            _contextAccessor = contextAccessor;
         }
 
-        protected override Task<Unit> HandleAsync(IEventContext<ApplicationStartingEvent> context)
+        protected override Task HandleAsync(IEventContext<ApplicationStartingEvent> context)
         {
             Assert.Equal(0, _testState.Count++);
-            Assert.Same(context, _contextAccessor.Context);
-            return Unit.Task;
+
+            return Task.CompletedTask;
         }
     }
 
-    private class ApplicationStartedHandler : LifecycleEventHandler<ApplicationStartedEvent>
+    private class ApplicationStartedHandler : EventHandlerBase<ApplicationStartedEvent>
     {
         private readonly TestState _testState;
 
@@ -64,14 +59,15 @@ public class AutoRegistrationTest
             _testState = testState;
         }
 
-        protected override Task<Unit> HandleAsync(IEventContext<ApplicationStartedEvent> context)
+        protected override Task HandleAsync(IEventContext<ApplicationStartedEvent> context)
         {
             Assert.Equal(1, _testState.Count++);
-            return Unit.Task;
+
+            return Task.CompletedTask;
         }
     }
 
-    private class ApplicationStoppingHandler : LifecycleEventHandler<ApplicationStoppingEvent>
+    private class ApplicationStoppingHandler : EventHandlerBase<ApplicationStoppingEvent>
     {
         private readonly TestState _testState;
 
@@ -80,14 +76,15 @@ public class AutoRegistrationTest
             _testState = testState;
         }
 
-        protected override Task<Unit> HandleAsync(IEventContext<ApplicationStoppingEvent> context)
+        protected override Task HandleAsync(IEventContext<ApplicationStoppingEvent> context)
         {
             Assert.Equal(2, _testState.Count++);
-            return Unit.Task;
+
+            return Task.CompletedTask;
         }
     }
 
-    private class ApplicationStoppedHandler : LifecycleEventHandler<ApplicationStoppedEvent>
+    private class ApplicationStoppedHandler : EventHandlerBase<ApplicationStoppedEvent>
     {
         private readonly TestState _testState;
 
@@ -96,10 +93,11 @@ public class AutoRegistrationTest
             _testState = testState;
         }
 
-        protected override Task<Unit> HandleAsync(IEventContext<ApplicationStoppedEvent> context)
+        protected override Task HandleAsync(IEventContext<ApplicationStoppedEvent> context)
         {
             Assert.Equal(3, _testState.Count++);
-            return Unit.Task;
+
+            return Task.CompletedTask;
         }
     }
 }
