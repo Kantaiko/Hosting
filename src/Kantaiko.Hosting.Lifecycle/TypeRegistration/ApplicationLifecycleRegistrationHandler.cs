@@ -14,27 +14,33 @@ internal class ApplicationLifecycleRegistrationHandler : EventHandlerTypeRegistr
 
     protected override bool RegisterHandler(Type contextType, Type handlerType)
     {
-        if (contextType == typeof(IEventContext<ApplicationStartingEvent>))
+        if (contextType == typeof(IAsyncEventContext<ApplicationStartingEvent>))
         {
-            _lifecycle.ApplicationStarting += CreateHandler<ApplicationStartingEvent>(handlerType);
+            _lifecycle.ApplicationStarting +=
+                CreateAsyncHandler<IAsyncEventContext<ApplicationStartingEvent>>(handlerType);
+
             return true;
         }
 
         if (contextType == typeof(IEventContext<ApplicationStartedEvent>))
         {
-            _lifecycle.ApplicationStarted += CreateHandler<ApplicationStartedEvent>(handlerType);
+            _lifecycle.ApplicationStarted += CreateHandler<IEventContext<ApplicationStartedEvent>>(handlerType);
+
             return true;
         }
 
-        if (contextType == typeof(IEventContext<ApplicationStoppingEvent>))
+        if (contextType == typeof(IAsyncEventContext<ApplicationStoppingEvent>))
         {
-            _lifecycle.ApplicationStopping += CreateHandler<ApplicationStoppingEvent>(handlerType);
+            _lifecycle.ApplicationStopping +=
+                CreateAsyncHandler<IAsyncEventContext<ApplicationStoppingEvent>>(handlerType);
+
             return true;
         }
 
         if (contextType == typeof(IEventContext<ApplicationStoppedEvent>))
         {
-            _lifecycle.ApplicationStopped += CreateHandler<ApplicationStoppedEvent>(handlerType);
+            _lifecycle.ApplicationStopped += CreateHandler<IEventContext<ApplicationStoppedEvent>>(handlerType);
+
             return true;
         }
 

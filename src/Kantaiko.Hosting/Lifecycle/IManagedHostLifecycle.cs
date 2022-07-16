@@ -5,6 +5,6 @@ namespace Kantaiko.Hosting.Lifecycle;
 
 public interface IManagedHostLifecycle
 {
-    event AsyncEventHandler<IEventContext<HostInitiallyStartedEvent>> HostInitiallyStarted;
-    event AsyncEventHandler<IEventContext<HostTransitionCompletedEvent>> HostTransitionCompleted;
+    event AsyncEventHandler<IAsyncEventContext<HostInitiallyStartedEvent>> HostInitiallyStarted;
+    event AsyncEventHandler<IAsyncEventContext<HostTransitionCompletedEvent>> HostTransitionCompleted;
 }

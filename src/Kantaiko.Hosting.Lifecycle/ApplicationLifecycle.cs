@@ -16,10 +16,11 @@ public class ApplicationLifecycle : IApplicationLifecycle, IHostedService
         _serviceProvider = serviceProvider;
     }
 
-    public event AsyncEventHandler<IEventContext<ApplicationStartingEvent>>? ApplicationStarting;
-    public event AsyncEventHandler<IEventContext<ApplicationStartedEvent>>? ApplicationStarted;
-    public event AsyncEventHandler<IEventContext<ApplicationStoppingEvent>>? ApplicationStopping;
-    public event AsyncEventHandler<IEventContext<ApplicationStoppedEvent>>? ApplicationStopped;
+    public event AsyncEventHandler<IAsyncEventContext<ApplicationStartingEvent>>? ApplicationStarting;
+    public event SyncEventHandler<IEventContext<ApplicationStartedEvent>>? ApplicationStarted;
+
+    public event AsyncEventHandler<IAsyncEventContext<ApplicationStoppingEvent>>? ApplicationStopping;
+    public event SyncEventHandler<IEventContext<ApplicationStoppedEvent>>? ApplicationStopped;
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
@@ -39,7 +40,7 @@ public class ApplicationLifecycle : IApplicationLifecycle, IHostedService
     {
         await using var scope = _serviceProvider.CreateAsyncScope();
 
-        var context = new EventContext<ApplicationStartingEvent>(
+        var context = new AsyncEventContext<ApplicationStartingEvent>(
             new ApplicationStartingEvent(),
             scope.ServiceProvider,
             cancellationToken
@@ -48,23 +49,23 @@ public class ApplicationLifecycle : IApplicationLifecycle, IHostedService
         await ApplicationStarting.InvokeAsync(context);
     }
 
-    private async void OnApplicationStarted()
+    private void OnApplicationStarted()
     {
-        await using var scope = _serviceProvider.CreateAsyncScope();
+        using var scope = _serviceProvider.CreateScope();
 
         var context = new EventContext<ApplicationStartedEvent>(
             new ApplicationStartedEvent(),
             scope.ServiceProvider
         );
 
-        await ApplicationStarted.InvokeAsync(context);
+        ApplicationStarted?.Invoke(context);
     }
 
     private async Task OnApplicationStopping(CancellationToken cancellationToken)
     {
         await using var scope = _serviceProvider.CreateAsyncScope();
 
-        var context = new EventContext<ApplicationStoppingEvent>(
+        var context = new AsyncEventContext<ApplicationStoppingEvent>(
             new ApplicationStoppingEvent(),
             scope.ServiceProvider,
             cancellationToken
@@ -73,15 +74,15 @@ public class ApplicationLifecycle : IApplicationLifecycle, IHostedService
         await ApplicationStopping.InvokeAsync(context);
     }
 
-    private async void OnApplicationStopped()
+    private void OnApplicationStopped()
     {
-        await using var scope = _serviceProvider.CreateAsyncScope();
+        using var scope = _serviceProvider.CreateScope();
 
         var context = new EventContext<ApplicationStoppedEvent>(
             new ApplicationStoppedEvent(),
             scope.ServiceProvider
         );
 
-        await ApplicationStopped.InvokeAsync(context);
+        ApplicationStopped?.Invoke(context);
     }
 }

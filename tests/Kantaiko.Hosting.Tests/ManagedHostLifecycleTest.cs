@@ -3,9 +3,7 @@ using Kantaiko.Hosting.Lifecycle.Events;
 using Kantaiko.Hosting.Managed;
 using Kantaiko.Hosting.Managed.Runtime;
 using Kantaiko.Hosting.Modularity;
-using Kantaiko.Routing;
 using Kantaiko.Routing.Events;
-using Microsoft.Extensions.Hosting;
 using Xunit;
 
 namespace Kantaiko.Hosting.Tests;
@@ -28,7 +26,7 @@ public class ManagedHostLifecycleTest
 
     private class TestModule : Module { }
 
-    private class HostInitiallyStartedHandler : EventHandlerBase<HostInitiallyStartedEvent>
+    private class HostInitiallyStartedHandler : AsyncEventHandlerBase<HostInitiallyStartedEvent>
     {
         private readonly IRuntimeHostManager _runtimeHostManager;
 
@@ -37,15 +35,15 @@ public class ManagedHostLifecycleTest
             _runtimeHostManager = runtimeHostManager;
         }
 
-        protected override Task<Unit> HandleAsync(IEventContext<HostInitiallyStartedEvent> context)
+        protected override Task HandleAsync(IAsyncEventContext<HostInitiallyStartedEvent> context)
         {
             _runtimeHostManager.Restart();
 
-            return Unit.Task;
+            return Task.CompletedTask;
         }
     }
 
-    private class HostTransitionCompletedHandler : EventHandlerBase<HostTransitionCompletedEvent>
+    private class HostTransitionCompletedHandler : AsyncEventHandlerBase<HostTransitionCompletedEvent>
     {
         private readonly IRuntimeHostManager _runtimeHostManager;
 
@@ -54,14 +52,14 @@ public class ManagedHostLifecycleTest
             _runtimeHostManager = runtimeHostManager;
         }
 
-        protected override Task<Unit> HandleAsync(IEventContext<HostTransitionCompletedEvent> context)
+        protected override Task HandleAsync(IAsyncEventContext<HostTransitionCompletedEvent> context)
         {
             var hostState = context.Event.HostState;
 
             Assert.True(hostState.HostRestarted);
             _runtimeHostManager.Stop();
 
-            return Unit.Task;
+            return Task.CompletedTask;
         }
     }
 }

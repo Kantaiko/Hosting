@@ -1,4 +1,5 @@
 ﻿using Kantaiko.Hosting.Modularity.TypeRegistration;
+using Kantaiko.Routing;
 using Kantaiko.Routing.Events;
 using Kantaiko.Routing.Handlers;
 
@@ -24,11 +25,6 @@ public abstract class EventHandlerTypeRegistrationHandler : ITypeRegistrationHan
 
             var typeArguments = @interface.GetGenericArguments();
 
-            if (typeArguments[1] != typeof(Task))
-            {
-                continue;
-            }
-
             return RegisterHandler(typeArguments[0], type);
         }
 
@@ -37,11 +33,18 @@ public abstract class EventHandlerTypeRegistrationHandler : ITypeRegistrationHan
 
     public virtual void Complete() { }
 
-    protected static AsyncEventHandler<IEventContext<TEvent>> CreateHandler<TEvent>(Type type)
+    protected static AsyncEventHandler<TContext> CreateAsyncHandler<TContext>(Type type)
     {
-        var handler = new TransientHandler<IEventContext<TEvent>, Task>(type, ServiceHandlerFactory.Instance);
+        var handler = new TransientHandler<TContext, Task>(type, ServiceHandlerFactory.Instance);
 
         return handler.Handle;
+    }
+
+    protected static SyncEventHandler<TContext> CreateHandler<TContext>(Type type)
+    {
+        var handler = new TransientHandler<TContext, Unit>(type, ServiceHandlerFactory.Instance);
+
+        return context => handler.Handle(context);
     }
 
     protected abstract bool RegisterHandler(Type contextType, Type handlerType);

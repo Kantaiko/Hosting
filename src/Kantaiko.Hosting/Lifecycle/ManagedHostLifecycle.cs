@@ -8,14 +8,14 @@ namespace Kantaiko.Hosting.Lifecycle;
 
 internal class ManagedHostLifecycle : IManagedHostLifecycle, IManagedHostHandler
 {
-    public event AsyncEventHandler<IEventContext<HostInitiallyStartedEvent>>? HostInitiallyStarted;
-    public event AsyncEventHandler<IEventContext<HostTransitionCompletedEvent>>? HostTransitionCompleted;
+    public event AsyncEventHandler<IAsyncEventContext<HostInitiallyStartedEvent>>? HostInitiallyStarted;
+    public event AsyncEventHandler<IAsyncEventContext<HostTransitionCompletedEvent>>? HostTransitionCompleted;
 
     public async Task HandleInitialHostStart(IServiceProvider serviceProvider, CancellationToken cancellationToken)
     {
         await using var scope = serviceProvider.CreateAsyncScope();
 
-        var context = new EventContext<HostInitiallyStartedEvent>(
+        var context = new AsyncEventContext<HostInitiallyStartedEvent>(
             new HostInitiallyStartedEvent(),
             scope.ServiceProvider,
             cancellationToken
@@ -29,7 +29,7 @@ internal class ManagedHostLifecycle : IManagedHostLifecycle, IManagedHostHandler
     {
         await using var scope = serviceProvider.CreateAsyncScope();
 
-        var context = new EventContext<HostTransitionCompletedEvent>(
+        var context = new AsyncEventContext<HostTransitionCompletedEvent>(
             new HostTransitionCompletedEvent(hostState),
             scope.ServiceProvider,
             cancellationToken

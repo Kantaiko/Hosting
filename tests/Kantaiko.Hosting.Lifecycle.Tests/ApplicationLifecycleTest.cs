@@ -33,8 +33,8 @@ public class ApplicationLifecycleTest
 
         lifecycle.ApplicationStarted += _ =>
         {
+            //
             Assert.Equal(1, state++);
-            return Task.CompletedTask;
         };
 
         lifecycle.ApplicationStopping += _ =>
@@ -45,8 +45,8 @@ public class ApplicationLifecycleTest
 
         lifecycle.ApplicationStopped += _ =>
         {
+            //
             Assert.Equal(3, state++);
-            return Task.CompletedTask;
         };
 
         await host.StartAsync();

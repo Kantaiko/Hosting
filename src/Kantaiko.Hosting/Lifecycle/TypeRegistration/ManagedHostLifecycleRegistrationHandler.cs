@@ -18,15 +18,19 @@ internal class ManagedHostLifecycleRegistrationHandler : EventHandlerTypeRegistr
 
     protected override bool RegisterHandler(Type contextType, Type handlerType)
     {
-        if (contextType == typeof(IEventContext<HostInitiallyStartedEvent>))
+        if (contextType == typeof(IAsyncEventContext<HostInitiallyStartedEvent>))
         {
-            _lifecycle.HostInitiallyStarted += CreateHandler<HostInitiallyStartedEvent>(handlerType);
+            _lifecycle.HostInitiallyStarted +=
+                CreateAsyncHandler<IAsyncEventContext<HostInitiallyStartedEvent>>(handlerType);
+
             return true;
         }
 
-        if (contextType == typeof(IEventContext<HostTransitionCompletedEvent>))
+        if (contextType == typeof(IAsyncEventContext<HostTransitionCompletedEvent>))
         {
-            _lifecycle.HostTransitionCompleted += CreateHandler<HostTransitionCompletedEvent>(handlerType);
+            _lifecycle.HostTransitionCompleted +=
+                CreateAsyncHandler<IAsyncEventContext<HostTransitionCompletedEvent>>(handlerType);
+
             return true;
         }
 

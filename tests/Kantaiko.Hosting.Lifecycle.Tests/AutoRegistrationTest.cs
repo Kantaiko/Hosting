@@ -33,7 +33,7 @@ public class AutoRegistrationTest
     private class TestModule : Module { }
 
 
-    private class ApplicationStartingHandler : EventHandlerBase<ApplicationStartingEvent>
+    private class ApplicationStartingHandler : AsyncEventHandlerBase<ApplicationStartingEvent>
     {
         private readonly TestState _testState;
 
@@ -42,7 +42,7 @@ public class AutoRegistrationTest
             _testState = testState;
         }
 
-        protected override Task HandleAsync(IEventContext<ApplicationStartingEvent> context)
+        protected override Task HandleAsync(IAsyncEventContext<ApplicationStartingEvent> context)
         {
             Assert.Equal(0, _testState.Count++);
 
@@ -59,15 +59,13 @@ public class AutoRegistrationTest
             _testState = testState;
         }
 
-        protected override Task HandleAsync(IEventContext<ApplicationStartedEvent> context)
+        protected override void Handle(IEventContext<ApplicationStartedEvent> context)
         {
             Assert.Equal(1, _testState.Count++);
-
-            return Task.CompletedTask;
         }
     }
 
-    private class ApplicationStoppingHandler : EventHandlerBase<ApplicationStoppingEvent>
+    private class ApplicationStoppingHandler : AsyncEventHandlerBase<ApplicationStoppingEvent>
     {
         private readonly TestState _testState;
 
@@ -76,7 +74,7 @@ public class AutoRegistrationTest
             _testState = testState;
         }
 
-        protected override Task HandleAsync(IEventContext<ApplicationStoppingEvent> context)
+        protected override Task HandleAsync(IAsyncEventContext<ApplicationStoppingEvent> context)
         {
             Assert.Equal(2, _testState.Count++);
 
@@ -93,11 +91,9 @@ public class AutoRegistrationTest
             _testState = testState;
         }
 
-        protected override Task HandleAsync(IEventContext<ApplicationStoppedEvent> context)
+        protected override void Handle(IEventContext<ApplicationStoppedEvent> context)
         {
             Assert.Equal(3, _testState.Count++);
-
-            return Task.CompletedTask;
         }
     }
 }

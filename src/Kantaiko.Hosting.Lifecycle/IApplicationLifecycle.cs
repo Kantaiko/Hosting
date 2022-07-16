@@ -5,9 +5,9 @@ namespace Kantaiko.Hosting.Lifecycle;
 
 public interface IApplicationLifecycle
 {
-    event AsyncEventHandler<IEventContext<ApplicationStartingEvent>> ApplicationStarting;
-    event AsyncEventHandler<IEventContext<ApplicationStartedEvent>> ApplicationStarted;
+    event AsyncEventHandler<IAsyncEventContext<ApplicationStartingEvent>> ApplicationStarting;
+    event SyncEventHandler<IEventContext<ApplicationStartedEvent>> ApplicationStarted;
 
-    event AsyncEventHandler<IEventContext<ApplicationStoppingEvent>> ApplicationStopping;
-    event AsyncEventHandler<IEventContext<ApplicationStoppedEvent>> ApplicationStopped;
+    event AsyncEventHandler<IAsyncEventContext<ApplicationStoppingEvent>> ApplicationStopping;
+    event SyncEventHandler<IEventContext<ApplicationStoppedEvent>> ApplicationStopped;
 }
