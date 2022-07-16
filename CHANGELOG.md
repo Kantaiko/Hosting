@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/saintedlama/versionize) for commit guidelines.
 
+<a name="0.7.1"></a>
+## [0.7.1](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.7.1) (2022-7-16)
+
+### Bug Fixes
+
+* Update routing infrastructure ([f635825](https://www.github.com/Kantaiko/Hosting/commit/f635825f79009f6615bb1f29b625b2a35b509deb))
+
 <a name="0.7.0"></a>
 ## [0.7.0](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.7.0) (2022-7-15)
 
