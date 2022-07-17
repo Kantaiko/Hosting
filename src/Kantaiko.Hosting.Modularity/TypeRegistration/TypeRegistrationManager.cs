@@ -6,33 +6,31 @@ namespace Kantaiko.Hosting.Modularity.TypeRegistration;
 internal class TypeRegistrationManager : IHostedService
 {
     private readonly HostInfo _hostInfo;
-    private readonly IEnumerable<ITypeRegistrationHandler> _registrationHandlers;
+    private readonly IReadOnlyCollection<ITypeRegistrationHandler> _registrationHandlers;
 
     public TypeRegistrationManager(HostInfo hostInfo, IEnumerable<ITypeRegistrationHandler> registrationHandlers)
     {
         _hostInfo = hostInfo;
-        _registrationHandlers = registrationHandlers;
+
+        _registrationHandlers =
+            registrationHandlers as IReadOnlyCollection<ITypeRegistrationHandler> ?? registrationHandlers.ToArray();
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        var registrationHandlers = new List<ITypeRegistrationHandler>();
-
         foreach (var assembly in _hostInfo.Assemblies)
         {
             foreach (var type in assembly.GetTypes())
             {
                 foreach (var registrationHandler in _registrationHandlers)
                 {
-                    registrationHandlers.Add(registrationHandler);
-
                     var handled = registrationHandler.Handle(type);
                     if (handled) break;
                 }
             }
         }
 
-        foreach (var registrationHandler in registrationHandlers)
+        foreach (var registrationHandler in _registrationHandlers)
         {
             registrationHandler.Complete();
         }
