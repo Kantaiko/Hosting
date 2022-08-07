@@ -17,7 +17,19 @@ public class ManagedHost : IManagedHost
 
     private CancellationToken _shutdownCancellationToken = CancellationToken.None;
 
-    public ManagedHostState State { get; private set; } = ManagedHostState.NotStarted;
+    private ManagedHostState _state = ManagedHostState.NotStarted;
+
+    public ManagedHostState State
+    {
+        get => _state;
+        private set
+        {
+            _state = value;
+            StateChanged?.Invoke(this, _state);
+        }
+    }
+
+    public event EventHandler<ManagedHostState>? StateChanged;
 
     public bool IsStarted => State is ManagedHostState.Started;
 
@@ -82,7 +94,7 @@ public class ManagedHost : IManagedHost
 
             if (_managedHostHandler is not null)
             {
-                await _managedHostHandler.HandleInitialHostStart(_currentHost.Services, cancellationToken);
+                await _managedHostHandler.HandleInitialHostStartAsync(_currentHost.Services, cancellationToken);
             }
 
             State = ManagedHostState.Started;
@@ -275,7 +287,7 @@ public class ManagedHost : IManagedHost
 
         if (_managedHostHandler is not null)
         {
-            await _managedHostHandler.HandleHostTransition(_currentHost.Services, newHostState, cancellationToken);
+            await _managedHostHandler.HandleHostTransitionAsync(_currentHost.Services, newHostState, cancellationToken);
         }
     }
 
@@ -305,7 +317,7 @@ public class ManagedHost : IManagedHost
 
         if (_managedHostHandler is not null)
         {
-            await _managedHostHandler.HandleHostTransition(_currentHost.Services, newHostState, cancellationToken);
+            await _managedHostHandler.HandleHostTransitionAsync(_currentHost.Services, newHostState, cancellationToken);
         }
     }
 

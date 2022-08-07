@@ -11,7 +11,7 @@ internal class ManagedHostLifecycle : IManagedHostLifecycle, IManagedHostHandler
     public event AsyncEventHandler<IAsyncEventContext<HostInitiallyStartedEvent>>? HostInitiallyStarted;
     public event AsyncEventHandler<IAsyncEventContext<HostTransitionCompletedEvent>>? HostTransitionCompleted;
 
-    public async Task HandleInitialHostStart(IServiceProvider serviceProvider, CancellationToken cancellationToken)
+    public async Task HandleInitialHostStartAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken)
     {
         await using var scope = serviceProvider.CreateAsyncScope();
 
@@ -24,7 +24,7 @@ internal class ManagedHostLifecycle : IManagedHostLifecycle, IManagedHostHandler
         await HostInitiallyStarted.InvokeAsync(context);
     }
 
-    public async Task HandleHostTransition(IServiceProvider serviceProvider, IRuntimeHostState hostState,
+    public async Task HandleHostTransitionAsync(IServiceProvider serviceProvider, IRuntimeHostState hostState,
         CancellationToken cancellationToken)
     {
         await using var scope = serviceProvider.CreateAsyncScope();

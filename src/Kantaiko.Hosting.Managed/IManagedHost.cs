@@ -14,6 +14,11 @@ public interface IManagedHost : IDisposable
     ManagedHostState State { get; }
 
     /// <summary>
+    /// Fires when host state changes.
+    /// </summary>
+    event EventHandler<ManagedHostState> StateChanged;
+
+    /// <summary>
     /// Indicates that the host is started.
     /// </summary>
     bool IsStarted { get; }

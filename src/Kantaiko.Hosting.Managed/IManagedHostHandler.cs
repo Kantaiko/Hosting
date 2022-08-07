@@ -4,9 +4,9 @@ namespace Kantaiko.Hosting.Managed;
 
 public interface IManagedHostHandler
 {
-    Task HandleInitialHostStart(IServiceProvider serviceProvider, CancellationToken cancellationToken);
+    Task HandleInitialHostStartAsync(IServiceProvider serviceProvider, CancellationToken cancellationToken);
 
-    Task HandleHostTransition(IServiceProvider serviceProvider,
+    Task HandleHostTransitionAsync(IServiceProvider serviceProvider,
         IRuntimeHostState hostState,
         CancellationToken cancellationToken);
 }

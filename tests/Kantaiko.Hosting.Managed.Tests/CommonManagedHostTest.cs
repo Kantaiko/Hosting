@@ -78,4 +78,30 @@ public class ManagedHostIntegrationTest
 
         await Assert.ThrowsAsync<InvalidHostStateException>(Action);
     }
+
+    [Fact]
+    public async Task ShouldSubscribeToHostStateChanges()
+    {
+        var builder = ManagedHost.CreateDefaultBuilder();
+        var app = builder.Build();
+
+        var lastState = ManagedHostState.NotStarted;
+
+        app.StateChanged += (_, state) => lastState = state;
+
+        await app.StartAsync();
+        Assert.Equal(ManagedHostState.Started, lastState);
+
+        var restartTask = app.RestartAsync();
+        Assert.Equal(ManagedHostState.Restarting, lastState);
+
+        await restartTask;
+        Assert.Equal(ManagedHostState.Started, lastState);
+
+        var stopTask = app.StopAsync();
+        Assert.Equal(ManagedHostState.Stopping, lastState);
+
+        await stopTask;
+        Assert.Equal(ManagedHostState.NotStarted, lastState);
+    }
 }
