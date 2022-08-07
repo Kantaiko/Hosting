@@ -76,7 +76,8 @@ public class ManagedHost : IManagedHost
         try
         {
             // Get new host builder factory
-            _currentHostBuilderFactory = _hostBuilderFactoryProvider.GetHostBuilderFactory();
+            _currentHostBuilderFactory = await _hostBuilderFactoryProvider
+                .GetHostBuilderFactoryAsync(cancellationToken);
 
             // Build new host
             _currentHost = BuildHost(_currentHostBuilderFactory);
@@ -261,7 +262,7 @@ public class ManagedHost : IManagedHost
 
         // Get new host builder factory if factory provider is volatile
         var hostBuilderFactory = _hostBuilderFactoryProvider.Volatile
-            ? _hostBuilderFactoryProvider.GetHostBuilderFactory()
+            ? await _hostBuilderFactoryProvider.GetHostBuilderFactoryAsync(cancellationToken)
             : _currentHostBuilderFactory;
 
         // Try to build new host

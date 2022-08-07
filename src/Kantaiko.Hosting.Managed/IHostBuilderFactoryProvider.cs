@@ -8,5 +8,5 @@ public interface IHostBuilderFactoryProvider
     /// </summary>
     bool Volatile { get; }
 
-    IHostBuilderFactory GetHostBuilderFactory();
+    Task<IHostBuilderFactory> GetHostBuilderFactoryAsync(CancellationToken cancellationToken);
 }

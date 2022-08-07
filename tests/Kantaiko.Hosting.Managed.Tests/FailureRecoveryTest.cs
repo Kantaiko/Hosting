@@ -50,9 +50,9 @@ public class FailureRecoveryTest
         public bool TriggerFailureForNewBuilders { get; set; }
         public bool TriggerFailureForAllBuilders { get; set; }
 
-        public IHostBuilderFactory GetHostBuilderFactory()
+        public Task<IHostBuilderFactory> GetHostBuilderFactoryAsync(CancellationToken cancellationToken)
         {
-            return new TestHostBuilderFactory(this, TriggerFailureForNewBuilders);
+            return Task.FromResult<IHostBuilderFactory>(new TestHostBuilderFactory(this, TriggerFailureForNewBuilders));
         }
     }
 

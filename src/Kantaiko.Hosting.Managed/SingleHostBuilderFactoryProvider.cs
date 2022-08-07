@@ -11,8 +11,8 @@ public class SingleHostBuilderFactoryProvider : IHostBuilderFactoryProvider
 
     public bool Volatile => false;
 
-    public IHostBuilderFactory GetHostBuilderFactory()
+    public Task<IHostBuilderFactory> GetHostBuilderFactoryAsync(CancellationToken cancellationToken)
     {
-        return _hostBuilderFactory;
+        return Task.FromResult(_hostBuilderFactory);
     }
 }
