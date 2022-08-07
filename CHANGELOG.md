@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/saintedlama/versionize) for commit guidelines.
 
+<a name="0.8.0"></a>
+## [0.8.0](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.8.0) (2022-8-7)
+
+### Features
+
+* **Managed:** Add host state change event ([acbfc0a](https://www.github.com/Kantaiko/Hosting/commit/acbfc0ab80661abf44419a48655c1d2e23ccfe50))
+* **Managed:** Allow HostBuilderFactoryProvider to resolve factories asynchronously ([bbe1be1](https://www.github.com/Kantaiko/Hosting/commit/bbe1be1f711fcde4376c6f802717c691f83a5bb0))
+
+### Bug Fixes
+
+* Update TypeRegistrationManager ([71a9bd3](https://www.github.com/Kantaiko/Hosting/commit/71a9bd3d52f7041adb2f359bae5703d1174d59a4))
+* **Modularity.Generator:** Allow custom module base classes ([b137408](https://www.github.com/Kantaiko/Hosting/commit/b13740853d297794e6a537dcc42a7a5c4e860337))
+
 <a name="0.7.1"></a>
 ## [0.7.1](https://www.github.com/Kantaiko/Hosting/releases/tag/v0.7.1) (2022-7-16)
 
