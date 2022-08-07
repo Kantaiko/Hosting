@@ -1,8 +1,6 @@
 using Kantaiko.Hosting.Modularity.Introspection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using VerifyXunit;
-using Xunit;
 
 namespace Kantaiko.Hosting.Modularity.Tests;
 

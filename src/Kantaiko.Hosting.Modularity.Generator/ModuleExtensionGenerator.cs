@@ -42,9 +42,7 @@ public class ModuleExtensionGenerator : IIncrementalGenerator
     }
 
     private const string ModuleBaseClassName = "Module";
-    private const string ModuleInterfaceName = "IModule";
 
-    private const string ModuleBaseClassFullName = "Kantaiko.Hosting.Modularity.Module";
     private const string ModuleInterfaceFullName = "Kantaiko.Hosting.Modularity.IModule";
 
     private const string ModuleBuilderAttributeFullName =
@@ -60,18 +58,20 @@ public class ModuleExtensionGenerator : IIncrementalGenerator
             return false;
         }
 
-        if (classDeclarationSyntax.Modifiers.Any(x => x.IsKind(SyntaxKind.PrivateKeyword)))
-        {
-            return false;
-        }
+        var hasForbiddenModifiers = classDeclarationSyntax.Modifiers.Any(x =>
+            x.IsKind(SyntaxKind.PrivateKeyword) ||
+            x.IsKind(SyntaxKind.AbstractKeyword));
 
-        if (classDeclarationSyntax.BaseList is not { } baseList)
+        if (hasForbiddenModifiers || classDeclarationSyntax.BaseList is not { } baseList)
         {
             return false;
         }
 
         return baseList.Types.Any(baseType =>
-            SyntaxHelper.ExtractTypeName(baseType.Type) is ModuleBaseClassName or ModuleInterfaceName);
+        {
+            var typeName = SyntaxHelper.ExtractTypeName(baseType.Type);
+            return typeName?.EndsWith(ModuleBaseClassName) ?? false;
+        });
     }
 
     private static ModuleExtensionInfo? TryCreateModuleInfo(GeneratorSyntaxContext context,
@@ -82,27 +82,17 @@ public class ModuleExtensionGenerator : IIncrementalGenerator
         var declaredSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclarationSyntax,
             cancellationToken: cancellationToken);
 
-        if (declaredSymbol is not { } moduleType)
+        if (declaredSymbol is null || !SymbolHelper.IsImplementsInterface(declaredSymbol, ModuleInterfaceFullName))
         {
             return null;
         }
 
-        if (moduleType.BaseType is not { } baseClass)
-        {
-            return null;
-        }
-
-        if (baseClass.ToString() is not ModuleBaseClassFullName or ModuleInterfaceFullName)
-        {
-            return null;
-        }
-
-        var moduleName = NameHelper.ExtractModuleName(moduleType);
+        var moduleName = NameHelper.ExtractModuleName(declaredSymbol);
 
         var extensionFlags = ModuleExtensionFlags.None;
         INamedTypeSymbol? additionType = null;
 
-        foreach (var attribute in moduleType.GetAttributes())
+        foreach (var attribute in declaredSymbol.GetAttributes())
         {
             var fullName = attribute.AttributeClass?.ToString();
 
@@ -131,6 +121,6 @@ public class ModuleExtensionGenerator : IIncrementalGenerator
             additionType = value as INamedTypeSymbol;
         }
 
-        return new ModuleExtensionInfo(moduleType, moduleName, extensionFlags, additionType);
+        return new ModuleExtensionInfo(declaredSymbol, moduleName, extensionFlags, additionType);
     }
 }

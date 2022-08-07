@@ -59,6 +59,24 @@ public class GeneratorTest
     }
 
     [Fact]
+    public Task ShouldGenerateCodeForModuleWithCustomBaseClass()
+    {
+        const string source = @"
+            using Kantaiko.Hosting.Modularity;
+            using Kantaiko.Hosting.Modularity.Generator;
+            using Microsoft.Extensions.DependencyInjection;
+
+            namespace Test;
+
+            public abstract class CustomModule : Module { }
+
+            public class TestModule : CustomModule { }
+        ";
+
+        return TestHelper.GenerateAndVerify(source);
+    }
+
+    [Fact]
     public Task ShouldReportDuplicateModuleNames()
     {
         const string source = @"
